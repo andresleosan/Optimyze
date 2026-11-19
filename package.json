@@ -14,7 +14,7 @@
     "e2e": "playwright test",
     "check:release": "node scripts/check-release.mjs",
     "local": "astro build && wrangler pages dev dist --ip 127.0.0.1 --port 4399",
-    "deploy": "astro build && node scripts/check-release.mjs && wrangler pages deploy dist --project-name optimyze --branch main"
+    "deploy": "astro build && node scripts/check-release.mjs && wrangler pages deploy dist --project-name optimyzejersey --branch main"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "^5.3.0",
