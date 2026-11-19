@@ -77,6 +77,35 @@ describe('salto', () => {
   });
 });
 
+describe('calidad', () => {
+  const correr = (e: T.EstadoGobernador, ms: number, dt: number) => {
+    const ordenes: number[] = [];
+    for (let t = 0; t < ms; t += dt) {
+      const g = T.gobernador(e, dt);
+      if (g) ordenes.push(g);
+    }
+    return ordenes;
+  };
+  it('a 60 Hz estables no baja de nivel, y un tirón suelto no cuenta', () => {
+    const e: T.EstadoGobernador = {};
+    expect(T.gobernador(e, 400)).toBe(0); // compilación de shaders al arrancar
+    expect(correr(e, 4000, 16.7).filter((g) => g < 0)).toHaveLength(0);
+  });
+  it('baja si los fotogramas son lentos de forma sostenida', () => {
+    expect(correr({}, 3000, 40)).toContain(-1);
+  });
+  it('sube a prueba; si no aguanta, vuelve atrás y no lo reintenta', () => {
+    const e: T.EstadoGobernador = {};
+    expect(correr(e, 7000, 16.7)).toEqual([1]);
+    expect(correr(e, 1500, 40)).toEqual([-1]); // al subir no aguanta
+    expect(correr(e, 20000, 16.7)).toEqual([]);
+  });
+  it('el scroll normal no apaga la escena; el muy rápido sí', () => {
+    expect(T.atenuacionPorScroll(1.5)).toBe(0);
+    expect(T.atenuacionPorScroll(-6)).toBe(1);
+  });
+});
+
 describe('utilidades', () => {
   it('convierte el color de marca a RGB lineal', () => {
     expect(T.hexALineal('#ffffff')).toEqual([1, 1, 1]);

@@ -297,7 +297,7 @@ export function crearMotor(canvas: HTMLCanvasElement, acento: [number, number, n
       gl.uniform1f(U(estrellas, 'uStreak'), s.streak);
       gl.uniform1f(U(estrellas, 'uPx'), 1.1 / h);
       gl.uniform1f(U(estrellas, 'uGain'), s.gain);
-      gl.uniform1f(U(estrellas, 'uTope'), 0.7); // brillo máximo de una estela
+      gl.uniform1f(U(estrellas, 'uTope'), 0.7); // brillo máximo de una estela (0..1); son líneas finas, muy lejos de llenar la pantalla
       gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, nivel.estrellas);
     },
   };

@@ -148,7 +148,8 @@ export function montarViaje(canvas: HTMLCanvasElement): void {
       vel = T.seguir(vel, (uNueva - u) / dt, dt, 14);
       estela = T.seguir(estela, Math.max(T.estelaDesdeScroll(vel), 0.9 * env), dt, 10);
       destello = T.limitarDestello(destello, 0.05 * estela * estela, dt);
-      luz = T.seguirLuz(luz, 1 - 0.97 * env, dt); // en plena hipervelocidad el agujero se apaga: solo quedan las estelas
+      // En plena hipervelocidad, o con un scroll muy rápido, el agujero se apaga: solo quedan las estelas.
+      luz = T.seguirLuz(luz, 1 - 0.97 * Math.max(env, T.atenuacionPorScroll(vel)), dt);
       reloj += dt;
       deriva += dt * DERIVA;
     }

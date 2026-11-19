@@ -124,25 +124,44 @@ export function seguirLuz(previa: number, objetivo: number, dt: number, bajada =
   return objetivo < previa ? seguir(previa, objetivo, dt, bajada) : Math.min(objetivo, previa + subidaMax * dt);
 }
 
-/** Gobernador de calidad: baja rápido, sube despacio. Devuelve -1, 0 o +1. */
+/**
+ * Gobernador de calidad. Devuelve -1 (bajar), 0 o +1 (subir un nivel a prueba).
+ * - Un tirón suelto (más de 100 ms: compilación, cambio de pestaña) no cuenta.
+ * - Tras arrancar o cambiar de nivel hay un segundo de calentamiento.
+ * - Sube si aguanta 60 fps durante 5 s; si al subir no aguanta, vuelve atrás y ya no lo intenta más.
+ */
 export interface EstadoGobernador {
   ema?: number | null;
   t?: number;
+  subio?: boolean;
+  tope?: boolean;
 }
-export function gobernador(estado: EstadoGobernador, dtMs: number): -1 | 0 | 1 {
-  estado.ema = estado.ema == null ? dtMs : estado.ema * 0.9 + dtMs * 0.1;
-  estado.t = (estado.t || 0) + dtMs;
-  if (estado.ema > 24 && estado.t > 600) {
-    estado.t = 0;
-    estado.ema = null;
+export function gobernador(e: EstadoGobernador, dtMs: number): -1 | 0 | 1 {
+  if (dtMs > 100) return 0;
+  e.t = (e.t ?? 0) + dtMs;
+  if (e.t < 1000) return 0;
+  e.ema = e.ema == null ? dtMs : e.ema * 0.9 + dtMs * 0.1;
+  if (e.ema > 24 && e.t > 1600) {
+    if (e.subio) e.tope = true;
+    e.subio = false;
+    e.t = 0;
+    e.ema = null;
     return -1;
   }
-  if (estado.ema < 13 && estado.t > 4000) {
-    estado.t = 0;
+  if (!e.tope && e.ema < 18 && e.t > 5000) {
+    e.subio = true;
+    e.t = 0;
+    e.ema = null;
     return 1;
   }
   return 0;
 }
+
+/**
+ * Cuánto se apaga la escena por ir muy deprisa con el scroll (0..1): nada hasta 2 paradas por segundo,
+ * todo a partir de 4,5. Evita cambios bruscos de brillo a pantalla completa (WCAG 2.3.1).
+ */
+export const atenuacionPorScroll = (v: number) => smooth(clamp((Math.abs(v) - 2) / 2.5));
 
 /** Tamaño interno del lienzo con tope de DPR y presupuesto de píxeles. */
 export function tamanoInterno(cssW: number, cssH: number, dpr: number, maxDpr: number, maxPixeles: number) {

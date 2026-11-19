@@ -5,6 +5,7 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({
   testDir: 'e2e',
   workers: 1,
+  retries: 2, // esta máquina mata navegadores por memoria: un cierre suelto no es un fallo de la web
   reporter: 'list',
   timeout: 60_000,
   use: { baseURL: 'http://127.0.0.1:4399', channel: 'chrome' },
