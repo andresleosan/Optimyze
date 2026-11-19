@@ -37,7 +37,10 @@ Las variables de diseño están en `src/styles/global.css`.
 
 Antes de cada commit: `pnpm check && pnpm test && pnpm build && pnpm check:release`, y `pnpm e2e` si cambia lo que se ve.
 
-Cada push a `main` publica solo en Cloudflare Pages con `.github/workflows/desplegar.yml`.
+Cada push a `main` publica solo en Cloudflare Pages (https://optimyzejersey.pages.dev):
+
+- Desde el VPS del proyecto, un hook local `pre-push` (no versionado) compila el commit que se sube y lo publica con la sesión de `wrangler` de esa máquina. No bloquea el push; el detalle queda en `.claude/despliegue.log`.
+- Desde cualquier otro sitio, `.github/workflows/desplegar.yml` hace las comprobaciones y publica si el repositorio tiene los secretos `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID`; sin ellos solo avisa.
 
 ## Dónde está cada cosa
 
