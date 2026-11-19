@@ -1,0 +1,173 @@
+---
+import Base from '../layouts/Base.astro';
+import { contenidos, idiomas, negocio, secciones } from '../contenido';
+import type { Idioma } from '../contenido/tipos';
+
+interface Props {
+  idioma: Idioma;
+}
+const { idioma } = Astro.props;
+const c = contenidos[idioma];
+const otro = idiomas[idioma === 'en' ? 'es' : 'en'];
+const lista = secciones(c);
+const hayTrabajo = lista.includes(c.trabajo);
+const correo = negocio.correo.direccion;
+// Cloudflare puede ofuscar los correos del HTML: estas marcas lo evitan, para que la dirección se pueda copiar sin JavaScript.
+const correoHtml = `<!--email_off-->${correo}<!--/email_off-->`;
+const organizacion = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: negocio.nombre,
+  url: new URL('/', Astro.site).href,
+});
+---
+
+<Base idioma={idioma} titulo={c.meta.titulo} descripcion={c.meta.descripcion}>
+  {idioma === 'en' && <script slot="head" type="application/ld+json" set:html={organizacion} />}
+
+  <a class="saltar" href="#contenido" data-directo>{c.ui.saltar}</a>
+
+  <header class="cabecera">
+    <a class="marca" href={`#${c.inicio.ancla}`} aria-label={c.ui.marcaVolver}>{negocio.nombre}</a>
+    <span id="progreso" data-de={c.ui.de}>{c.inicio.menu} · 1 {c.ui.de} {lista.length}</span>
+    <nav aria-label={c.ui.secciones}>
+      <ul>
+        {
+          lista.slice(1).map((s) => (
+            <li>
+              <a href={`#${s.ancla}`}>{s.menu}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div class="controles">
+      <a class="control" href={otro.ruta} lang={otro.html} hreflang={otro.hreflang}>{c.ui.otroIdioma}</a>
+      <button class="control" id="pausa" type="button" aria-pressed="false" hidden>{c.ui.pausar}</button>
+    </div>
+  </header>
+
+  <main id="contenido" data-pendiente={c.meta.revisado ? undefined : 'texto'}>
+    <section id={c.inicio.ancla} data-nombre={c.inicio.menu} class="parada inicio" data-parada>
+      <div class="bloque">
+        <h1>{c.inicio.titular}</h1>
+        <p>{c.inicio.texto}</p>
+        <div class="acciones">
+          <a class="boton principal" href={`#${c.servicios.ancla}`}>{c.inicio.accionPrincipal}</a>
+          <a class="boton" href={`#${c.contacto.ancla}`}>{c.inicio.accionContacto}</a>
+        </div>
+      </div>
+    </section>
+
+    <section id={c.servicios.ancla} data-nombre={c.servicios.menu}>
+      <div class="parada" data-parada>
+        <div class="bloque">
+          <h2>{c.servicios.titulo}</h2>
+          <ol class="indice">
+            {
+              c.servicios.pilares.map((p) => (
+                <li>
+                  <a href={`#${p.ancla}`}>{p.nombre}</a>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </div>
+      {
+        c.servicios.pilares.map((p, i) => (
+          <article id={p.ancla} class="parada pilar" data-parada>
+            <div class="bloque">
+              <p class="rotulo">
+                {i + 1}. {p.nombre}
+              </p>
+              <h3>{p.pregunta}</h3>
+              <p set:html={p.ayuda} />
+            </div>
+          </article>
+        ))
+      }
+      <div class="tramo">
+        <div class="bloque">
+          <h3>{c.servicios.conexion.titulo}</h3>
+          <p>{c.servicios.conexion.texto}</p>
+          <p class="nota">{c.servicios.conexion.nota}</p>
+        </div>
+      </div>
+      <div class="tramo secundario">
+        <div class="bloque">
+          <p class="rotulo">{c.servicios.apoyo.rotulo}</p>
+          <h3>{c.servicios.apoyo.titulo}</h3>
+          <p>{c.servicios.apoyo.texto}</p>
+        </div>
+      </div>
+    </section>
+
+    {
+      hayTrabajo && (
+        <section id={c.trabajo.ancla} data-nombre={c.trabajo.menu} class="parada" data-parada>
+          <div class="bloque ancho">
+            <h2>{c.trabajo.titulo}</h2>
+            <div class="muestras">
+              {c.trabajo.muestras.map((m) => (
+                <article class="muestra" data-pendiente={m.aprobada ? undefined : 'permiso'}>
+                  <figure>
+                    {m.imagen ? (
+                      <img src={m.imagen} alt={m.alt} loading="lazy" decoding="async" />
+                    ) : (
+                      <div class="pendiente" data-pendiente="imagen">{c.ui.pendienteImagen}</div>
+                    )}
+                  </figure>
+                  <h3>{m.titulo}</h3>
+                  <p>{m.texto}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    <section id={c.equipo.ancla} data-nombre={c.equipo.menu} class="parada" data-parada>
+      <div class="bloque">
+        <h2>{c.equipo.titulo}</h2>
+        <p>{c.equipo.texto}</p>
+      </div>
+    </section>
+
+    <section id={c.preguntas.ancla} data-nombre={c.preguntas.menu} class="parada preguntas" data-parada>
+      <div class="bloque">
+        <h2>{c.preguntas.titulo}</h2>
+        <dl>
+          {
+            c.preguntas.lista.map((q) => (
+              <>
+                <dt>{q.pregunta}</dt>
+                <dd>{q.respuesta}</dd>
+              </>
+            ))
+          }
+        </dl>
+      </div>
+    </section>
+
+    <section id={c.contacto.ancla} data-nombre={c.contacto.menu} class="parada contacto" data-parada>
+      <div class="bloque">
+        <h2>{c.contacto.titulo}</h2>
+        <p>{c.contacto.texto}</p>
+        <p class="correo" set:html={correoHtml} />
+        {!negocio.correo.confirmado && <p class="nota" data-pendiente="correo">{c.ui.correoProvisional}</p>}
+        <div class="acciones">
+          <a class="boton principal" href={`mailto:${correo}`}>{c.contacto.accion}</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <p>{negocio.nombre} · Jersey</p>
+    <p>
+      <a href={`mailto:${correo}`} set:html={correoHtml} />
+    </p>
+  </footer>
+</Base>

@@ -1,0 +1,39 @@
+# Cada push a main comprueba, compila y publica en Cloudflare Pages (https://optimyze.pages.dev).
+# Necesita dos secretos en el repositorio: CLOUDFLARE_API_TOKEN (permiso «Cloudflare Pages: Edit»)
+# y CLOUDFLARE_ACCOUNT_ID.
+name: Desplegar en Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desplegar
+  cancel-in-progress: true
+
+jobs:
+  desplegar:
+    runs-on: ubuntu-latest
+    env:
+      ASTRO_TELEMETRY_DISABLED: 1
+      WRANGLER_SEND_METRICS: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm check:release
+      - run: pnpm exec wrangler pages deploy dist --project-name optimyze --branch main
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

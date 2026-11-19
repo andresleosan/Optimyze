@@ -1,0 +1,51 @@
+---
+import '@fontsource-variable/archivo';
+import '@fontsource-variable/atkinson-hyperlegible-next';
+import '../styles/global.css';
+import { idiomas } from '../contenido';
+import type { Idioma } from '../contenido/tipos';
+
+interface Props {
+  idioma: Idioma;
+  titulo: string;
+  descripcion: string;
+  /** false en páginas sin equivalente por idioma (404): sin canonical ni hreflang. */
+  alternas?: boolean;
+}
+const { idioma, titulo, descripcion, alternas = true } = Astro.props;
+const url = (ruta: string) => new URL(ruta, Astro.site).href;
+---
+
+<!doctype html>
+<html lang={idiomas[idioma].html}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titulo}</title>
+    <meta name="description" content={descripcion} />
+    <meta name="theme-color" content="#07080c" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {
+      alternas && (
+        <>
+          <link rel="canonical" href={url(idiomas[idioma].ruta)} />
+          <link rel="alternate" hreflang="en" href={url(idiomas.en.ruta)} />
+          <link rel="alternate" hreflang="es" href={url(idiomas.es.ruta)} />
+          <link rel="alternate" hreflang="x-default" href={url(idiomas.en.ruta)} />
+          <meta property="og:type" content="website" />
+          <meta property="og:title" content={titulo} />
+          <meta property="og:description" content={descripcion} />
+          <meta property="og:url" content={url(idiomas[idioma].ruta)} />
+        </>
+      )
+    }
+    <slot name="head" />
+  </head>
+  <body>
+    <canvas id="viaje" aria-hidden="true"></canvas>
+    <slot />
+    <script>
+      import '../viaje/arranque';
+    </script>
+  </body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "name": "optimyze-web",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.23.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "check": "astro check",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "check:release": "node scripts/check-release.mjs",
+    "local": "astro build && wrangler pages dev dist --ip 127.0.0.1 --port 4399",
+    "deploy": "astro build && node scripts/check-release.mjs && wrangler pages deploy dist --project-name optimyze --branch main"
+  },
+  "dependencies": {
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource-variable/atkinson-hyperlegible-next": "^5.3.0",
+    "astro": "^7.4.12"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@astrojs/sitemap": "^3.7.5",
+    "@playwright/test": "^1.65.1",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.0",
+    "wrangler": "^4.164.0"
+  }
+}

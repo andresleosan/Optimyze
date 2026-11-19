@@ -1,0 +1,458 @@
+/* Variables de diseño. La marca definitiva se cambia tocando solo este bloque. */
+:root {
+  --vacio: #07080c; /* fondo de página y respaldo sin WebGL */
+  --sombra: #0a0b0f; /* núcleo opaco de los bloques de lectura */
+  --texto: #f1eee6; /* 16,9:1 sobre sombra */
+  --texto-suave: #bdb8ad; /* 9,9:1 */
+  --ambar: #ffb84d; /* acción principal, enlace activo, nombre del pilar · 11,4:1 */
+  --sobre-ambar: #0a0b0f;
+  --anillo: #ffd58a; /* foco, siempre separado 3 px */
+  --borde: #6c6e78; /* borde de controles · 3,9:1 */
+  --linea: #3a3c44; /* separadores decorativos */
+  --disco: #ffae28; /* color del disco del agujero: lo lee la escena WebGL */
+
+  --fuente-titular: 'Archivo Variable', 'Arial Narrow', Arial, sans-serif;
+  --fuente-texto: 'Atkinson Hyperlegible Next Variable', system-ui, sans-serif;
+  --peso-titular: 560;
+
+  --ancho-texto: 40rem;
+  --margen: clamp(1.25rem, 5vw, 6.75rem);
+  --alto-cabecera: 4rem;
+  --difuminado: 3.5rem; /* borde blando de los bloques de lectura */
+
+  color-scheme: dark;
+  scroll-padding-top: calc(var(--alto-cabecera) + 1rem);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Respaldo sin WebGL ni JavaScript: el agujero en degradados CSS. Va en <html> porque el lienzo fijo
+   (z-index -1) se pinta encima del fondo de la raíz pero debajo del de <body>. */
+html {
+  background:
+    radial-gradient(9vmax 9vmax at 74% 38%, #000 96%, transparent 100%),
+    radial-gradient(46vmax 9vmax at 74% 40%, color-mix(in srgb, var(--disco) 26%, transparent), transparent 70%),
+    radial-gradient(20vmax 20vmax at 74% 38%, color-mix(in srgb, var(--disco) 14%, transparent), transparent 70%),
+    var(--vacio);
+  background-attachment: fixed;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--texto);
+  font: 400 1.125rem/1.6 var(--fuente-texto);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--fuente-titular);
+  font-weight: var(--peso-titular);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  margin: 0 0 1.25rem;
+  text-wrap: balance;
+}
+h1 {
+  font-size: clamp(2rem, 1.2rem + 3.2vw, 3.25rem);
+}
+h2 {
+  font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem);
+}
+h3 {
+  font-size: 1.375rem;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+p {
+  margin: 0 0 1.25rem;
+  max-width: var(--ancho-texto);
+}
+strong {
+  font-weight: 650;
+}
+a {
+  color: inherit;
+}
+:focus-visible {
+  outline: 2px solid var(--anillo);
+  outline-offset: 3px;
+}
+h1:focus,
+h2:focus,
+h3:focus {
+  outline: none; /* reciben el foco tras un salto: no son controles */
+}
+
+/* --- Escena --- */
+#viaje {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100lvh;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+[data-viaje='vivo'] #viaje {
+  opacity: 1;
+}
+
+/* --- Saltar al contenido --- */
+.saltar {
+  position: fixed;
+  left: 1rem;
+  top: -4rem;
+  z-index: 4;
+  padding: 0.6rem 1rem;
+  background: var(--ambar);
+  color: var(--sobre-ambar);
+  font-weight: 650;
+  text-decoration: none;
+}
+.saltar:focus {
+  top: 0.75rem;
+}
+
+/* --- Cabecera --- */
+.cabecera {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 3;
+  min-height: var(--alto-cabecera);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  padding: 0 clamp(1rem, 2.8vw, 2.5rem);
+  background: var(--vacio);
+  border-bottom: 1px solid var(--linea);
+  font-size: 0.9375rem;
+}
+.marca {
+  font-family: var(--fuente-titular);
+  font-weight: 650;
+  font-size: 1.0625rem;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  margin-right: auto;
+  padding: 0.5rem 0;
+}
+#progreso {
+  color: var(--texto-suave);
+  font-size: 0.8125rem;
+}
+.cabecera nav ul {
+  display: flex;
+  gap: 1.375rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.cabecera nav a {
+  display: block;
+  padding: 0.5rem 0 0.375rem;
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+.cabecera nav a:hover {
+  color: var(--ambar);
+}
+.cabecera nav a[aria-current] {
+  border-bottom-color: var(--ambar);
+}
+.controles {
+  display: flex;
+  gap: 0.5rem;
+}
+.control {
+  font: inherit;
+  color: var(--texto);
+  background: transparent;
+  border: 1px solid var(--borde);
+  padding: 0.375rem 0.75rem;
+  min-height: 2.25rem;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.control:hover {
+  border-color: var(--texto);
+}
+.control[aria-pressed='true'] {
+  background: var(--texto);
+  color: var(--sombra);
+}
+
+/* --- Contenido --- */
+main {
+  transition: opacity 0.18s;
+  overflow-x: clip; /* los parches de los bloques sobresalen del texto: que no creen scroll horizontal */
+}
+[data-salto] main {
+  opacity: 0;
+  transition-duration: 0.12s;
+}
+main > section {
+  padding: 0 var(--margen);
+}
+
+/* Bloque de lectura: un parche de vacío. Núcleo opaco bajo todo el texto y borde difuminado; sin marco. */
+.bloque {
+  position: relative;
+  max-width: calc(var(--ancho-texto) + 6rem);
+  isolation: isolate;
+}
+.bloque::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--difuminado) * -1);
+  z-index: -1;
+  background: var(--sombra);
+  mask-image:
+    linear-gradient(to right, transparent, #000 var(--difuminado), #000 calc(100% - var(--difuminado)), transparent),
+    linear-gradient(to bottom, transparent, #000 var(--difuminado), #000 calc(100% - var(--difuminado)), transparent);
+  mask-composite: intersect;
+}
+
+.parada {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: calc(var(--alto-cabecera) + 3rem) 4rem;
+}
+.tramo {
+  padding-block: 4rem;
+}
+
+/* Inicio */
+.inicio p {
+  font-size: 1.1875rem;
+}
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.875rem;
+  margin-top: 0.5rem;
+}
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.625rem 1.25rem;
+  font-weight: 650;
+  text-decoration: none;
+  border: 1px solid var(--borde);
+  transition: transform 0.12s;
+}
+.boton:hover {
+  transform: translateY(-1px);
+  border-color: var(--texto);
+}
+.boton:active {
+  transform: scale(0.98);
+}
+.boton.principal {
+  background: var(--ambar);
+  border-color: var(--ambar);
+  color: var(--sobre-ambar);
+}
+
+/* Servicios */
+.indice {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.25rem;
+}
+.indice a {
+  display: inline-block;
+  padding: 0.25rem 0;
+  text-underline-offset: 0.25em;
+}
+.indice a:hover {
+  color: var(--ambar);
+}
+.rotulo {
+  color: var(--ambar);
+  font-weight: 650;
+  font-size: 1rem;
+  margin-bottom: 0.875rem;
+}
+.pilar h3 {
+  font-size: clamp(1.625rem, 1.1rem + 1.9vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+.nota {
+  color: var(--texto-suave);
+  font-size: 1rem;
+}
+.secundario h3 {
+  font-size: 1.5rem;
+}
+
+/* Nuestro trabajo */
+.muestras {
+  display: grid;
+  gap: 3rem;
+  margin-top: 2rem;
+}
+.muestra figure {
+  margin: 0 0 1.25rem;
+}
+.muestra img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.pendiente {
+  aspect-ratio: 16 / 10;
+  display: grid;
+  place-items: center;
+  border: 1px dashed var(--borde);
+  color: var(--texto-suave);
+  font-size: 0.9375rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Preguntas frecuentes: todas visibles, sin acordeón */
+.preguntas dl {
+  margin: 0;
+}
+.preguntas dt {
+  font-family: var(--fuente-titular);
+  font-weight: var(--peso-titular);
+  font-size: 1.25rem;
+  line-height: 1.25;
+  margin: 2rem 0 0.5rem;
+}
+.preguntas dd {
+  margin: 0;
+  max-width: var(--ancho-texto);
+}
+
+/* Contacto: la llegada. El bloque va centrado, dentro de la sombra del agujero. */
+.contacto {
+  align-items: center;
+  text-align: center;
+}
+.contacto .bloque::before {
+  inset: -18%;
+  background: #050506;
+  mask-image: radial-gradient(closest-side, #000 72%, transparent);
+  mask-composite: add;
+}
+.contacto p {
+  margin-inline: auto;
+}
+.correo {
+  font-size: clamp(1.25rem, 1rem + 1.2vw, 1.625rem);
+  font-weight: 650;
+  user-select: all;
+  overflow-wrap: anywhere;
+}
+.contacto .acciones {
+  justify-content: center;
+}
+
+/* Pie */
+.pie {
+  position: relative;
+  padding: 2rem var(--margen) 2.5rem;
+  background: var(--vacio);
+  border-top: 1px solid var(--linea);
+  color: var(--texto-suave);
+  font-size: 0.9375rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  justify-content: space-between;
+}
+.pie p {
+  margin: 0;
+}
+
+/* --- Escritorio: dos columnas en los pilares (nombre y pregunta a un lado, respuesta al otro del bloque) --- */
+@media (min-width: 64rem) {
+  .muestras {
+    grid-template-columns: 1fr 1fr;
+  }
+  .ancho {
+    max-width: 62rem;
+  }
+}
+
+/* --- Móvil y pantallas estrechas: menú en una segunda fila desplazable --- */
+@media (max-width: 63.99rem) {
+  :root {
+    --alto-cabecera: 6.25rem;
+    --difuminado: 2rem;
+  }
+  #progreso {
+    display: none;
+  }
+  .cabecera nav {
+    order: 3;
+    flex-basis: 100%;
+    margin: 0 calc(clamp(1rem, 2.8vw, 2.5rem) * -1);
+    padding: 0 clamp(1rem, 2.8vw, 2.5rem);
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-top: 1px solid var(--linea);
+  }
+  .cabecera nav a {
+    padding-block: 0.625rem 0.5rem;
+  }
+  /* En vertical el agujero ocupa la franja superior: el texto de Inicio empieza debajo. */
+  .inicio {
+    justify-content: flex-end;
+    padding-top: 46svh;
+  }
+  .acciones .boton {
+    flex: 1 1 100%;
+  }
+}
+
+/* --- Preferencias del visitante --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+@media (forced-colors: active) {
+  #viaje {
+    display: none;
+  }
+  .bloque::before {
+    display: none;
+  }
+}
+@media print {
+  #viaje,
+  .cabecera {
+    display: none;
+  }
+  html {
+    background: #fff;
+  }
+  body {
+    color: #000;
+  }
+  .bloque::before {
+    display: none;
+  }
+}

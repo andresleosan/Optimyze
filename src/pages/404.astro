@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+import { contenidos, idiomas } from '../contenido';
+const { en, es } = contenidos;
+---
+
+<Base idioma="en" titulo="404 · Optimyze" descripcion={en.ui.noEncontrada} alternas={false}>
+  <main id="contenido">
+    <section class="parada">
+      <div class="bloque">
+        <h1>404</h1>
+        <p>{en.ui.noEncontrada} <a href={idiomas.en.ruta}>{en.ui.volverInicio}</a></p>
+        <p lang="es">{es.ui.noEncontrada} <a href={idiomas.es.ruta}>{es.ui.volverInicio}</a></p>
+      </div>
+    </section>
+  </main>
+</Base>

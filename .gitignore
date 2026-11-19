@@ -1,0 +1,27 @@
+# Dependencias y salidas de compilación
+node_modules/
+dist/
+.astro/
+.wrangler/
+test-results/
+playwright-report/
+
+# Secretos locales
+.env*
+!.env.example
+.dev.vars*
+!.dev.vars.example
+
+# Estado local de herramientas y agentes
+.claude/
+.worktrees/
+.superpowers/
+.impeccable/
+.playwright-mcp/
+graphify-out/
+
+# Hoja de ruta: de esta carpeta solo se versionan las fichas de construcción
+docs/roadmap/*
+!docs/roadmap/tasks/
+docs/roadmap/tasks/*
+!docs/roadmap/tasks/WEB-*.json

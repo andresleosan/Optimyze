@@ -1,0 +1,7 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Cloudflare Pages: solo archivos estáticos. Se publica en https://optimyze.pages.dev
+  "name": "optimyze",
+  "compatibility_date": "2026-11-19",
+  "pages_build_output_dir": "./dist"
+}
