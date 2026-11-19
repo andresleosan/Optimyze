@@ -1,0 +1,23 @@
+{
+  "id": "WEB-07",
+  "titulo": "Tope de 60 fotogramas por segundo y reposo de la escena",
+  "estado": "pendiente",
+  "responsable": "desarrollo",
+  "criterio": [
+    "En pantallas de 120 Hz la escena no dibuja más de 60 fotogramas por segundo.",
+    "Tras unos segundos sin scroll baja el ritmo para ahorrar batería y lo recupera al moverse.",
+    "Probado con pruebas de la lógica pura."
+  ],
+  "depende": [],
+  "comprueba": [],
+  "recursos": [
+    "src/viaje/control.ts",
+    "src/viaje/tiempo.ts"
+  ],
+  "hecho": "",
+  "falta": "",
+  "bloqueo": "",
+  "siguiente": "Añadir la decisión de ritmo como función pura en tiempo.ts.",
+  "evidencia": [],
+  "actualizado": "2026-11-19"
+}

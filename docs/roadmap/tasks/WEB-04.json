@@ -1,0 +1,25 @@
+{
+  "id": "WEB-04",
+  "titulo": "Separar vista previa y producción en el despliegue",
+  "estado": "pendiente",
+  "responsable": "desarrollo",
+  "criterio": [
+    "Un push a main publica en una dirección de vista previa que no se indexa.",
+    "Producción solo se publica a propósito y después de pasar pnpm check:release --strict.",
+    "Documentado en AGENTS.md."
+  ],
+  "depende": [],
+  "comprueba": [],
+  "recursos": [
+    ".github/workflows/**",
+    "package.json",
+    "public/_headers",
+    "AGENTS.md"
+  ],
+  "hecho": "",
+  "falta": "",
+  "bloqueo": "",
+  "siguiente": "Hacerlo antes de conectar un dominio propio: hoy vista previa y producción son el mismo despliegue.",
+  "evidencia": [],
+  "actualizado": "2026-11-19"
+}

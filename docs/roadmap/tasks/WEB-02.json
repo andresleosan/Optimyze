@@ -1,0 +1,23 @@
+{
+  "id": "WEB-02",
+  "titulo": "Prueba automática de destellos y de que el lienzo se ve",
+  "estado": "pendiente",
+  "responsable": "desarrollo",
+  "criterio": [
+    "Un analizador mide el área que cambia de brillo en salto largo, salto corto, salto atrás, tecla Fin y barrido rápido; ninguno supera el 25 % (WCAG 2.3.1).",
+    "La prueba usa el reloj falso de Playwright para no depender de la velocidad de la máquina.",
+    "Otra prueba comprueba que hay estrellas dibujadas en una zona sin texto y que tras perder el contexto WebGL la escena vuelve."
+  ],
+  "depende": [],
+  "comprueba": [],
+  "recursos": [
+    "e2e/**",
+    "src/viaje/destellos.ts"
+  ],
+  "hecho": "",
+  "falta": "",
+  "bloqueo": "",
+  "siguiente": "Partir del analizador y la receta que dejó el repaso de la escena (carpeta de trabajo local).",
+  "evidencia": [],
+  "actualizado": "2026-11-19"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "WEB-01",
+  "titulo": "Corregir el gobernador de calidad y atenuar la escena con scroll muy rápido",
+  "estado": "hecho",
+  "responsable": "desarrollo",
+  "criterio": [
+    "En pantallas de 60 Hz la calidad no se queda en «baja» por un solo fotograma largo y puede volver a subir.",
+    "Con scroll muy rápido la escena se atenúa en vez de cambiar de brillo de golpe."
+  ],
+  "depende": [],
+  "comprueba": [],
+  "recursos": [
+    "src/viaje/tiempo.ts",
+    "src/viaje/control.ts"
+  ],
+  "hecho": "Gobernador con calentamiento, descarte de tirones y subida a prueba; atenuación por velocidad de scroll.",
+  "falta": "",
+  "bloqueo": "",
+  "siguiente": "",
+  "evidencia": [
+    "commit bce01d7",
+    "pnpm test → 18 de 18",
+    "pnpm e2e → 18 de 18",
+    "publicado con pnpm run deploy el 19-nov-2026"
+  ],
+  "actualizado": "2026-11-19"
+}

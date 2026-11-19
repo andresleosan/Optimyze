@@ -1,0 +1,25 @@
+{
+  "id": "WEB-05",
+  "titulo": "Página de aviso de privacidad en los dos idiomas",
+  "estado": "pendiente",
+  "responsable": "desarrollo",
+  "criterio": [
+    "Existe una página de aviso enlazada desde el pie y junto al correo, en español e inglés.",
+    "Cubre los apartados que exige la ley de protección de datos de Jersey y lo que la web guarda en el dispositivo.",
+    "Va marcada como borrador pendiente hasta que el dueño la apruebe con un profesional."
+  ],
+  "depende": [
+    "WEB-03"
+  ],
+  "comprueba": [],
+  "recursos": [
+    "src/pages/**",
+    "src/contenido/aviso*"
+  ],
+  "hecho": "",
+  "falta": "",
+  "bloqueo": "",
+  "siguiente": "Redactar el borrador solo con hechos comprobados del alojamiento y sin inventar datos del negocio.",
+  "evidencia": [],
+  "actualizado": "2026-11-19"
+}

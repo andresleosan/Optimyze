@@ -1,0 +1,22 @@
+{
+  "id": "WEB-06",
+  "titulo": "Imagen para compartir en redes",
+  "estado": "pendiente",
+  "responsable": "desarrollo",
+  "criterio": [
+    "Cada idioma tiene una imagen de 1200 × 630 generada de un fotograma de la propia escena, con su texto alternativo.",
+    "Las etiquetas og:image y de tarjeta están en el HTML y la imagen pesa menos de 200 kB."
+  ],
+  "depende": [],
+  "comprueba": [],
+  "recursos": [
+    "public/og/**",
+    "src/layouts/Base.astro"
+  ],
+  "hecho": "",
+  "falta": "",
+  "bloqueo": "",
+  "siguiente": "Capturar el fotograma con la ayuda ?software en una máquina con GPU o en el navegador del sistema.",
+  "evidencia": [],
+  "actualizado": "2026-11-19"
+}

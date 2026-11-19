@@ -1,0 +1,22 @@
+{
+  "id": "WEB-08",
+  "titulo": "Ajustes visuales tras la prueba en dispositivos reales",
+  "estado": "pendiente",
+  "responsable": "dueño",
+  "criterio": [
+    "El dueño ha probado la vista previa en móvil y ordenador.",
+    "Sus cambios (brillo y largo de las estelas, tamaños, composición) están aplicados y publicados."
+  ],
+  "depende": [],
+  "comprueba": [],
+  "recursos": [
+    "src/styles/**",
+    "src/viaje/**"
+  ],
+  "hecho": "",
+  "falta": "",
+  "bloqueo": "Abre la vista previa en tu móvil y en tu ordenador y di qué cambiarías.",
+  "siguiente": "",
+  "evidencia": [],
+  "actualizado": "2026-11-19"
+}

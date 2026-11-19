@@ -1,0 +1,24 @@
+{
+  "id": "WEB-03",
+  "titulo": "Puerta de producción completa: identidad, aviso de privacidad, registro y perfiles",
+  "estado": "pendiente",
+  "responsable": "desarrollo",
+  "criterio": [
+    "Los datos del negocio incluyen identidad legal, registro de protección de datos, aviso de privacidad y perfiles, cada uno con su marca de confirmado.",
+    "El pie los muestra y marca como pendientes los que falten.",
+    "pnpm check:release --strict falla mientras falte alguno o haya texto nuevo sin revisar."
+  ],
+  "depende": [],
+  "comprueba": [],
+  "recursos": [
+    "src/contenido/**",
+    "scripts/check-release.mjs",
+    "src/components/Pagina.astro"
+  ],
+  "hecho": "",
+  "falta": "",
+  "bloqueo": "",
+  "siguiente": "Añadir los campos a negocio y sus nombres a la lista de pendientes de check-release.",
+  "evidencia": [],
+  "actualizado": "2026-11-19"
+}
