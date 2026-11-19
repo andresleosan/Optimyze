@@ -38,7 +38,7 @@ jobs:
       # Sin los secretos, las comprobaciones corren igual y solo se salta la publicación (sin fallo ni correo).
       - name: Avisar si faltan los secretos de Cloudflare
         if: env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == ''
-        run: echo "::warning::Faltan los secretos CLOUDFLARE_API_TOKEN o CLOUDFLARE_ACCOUNT_ID: no se publica en Cloudflare Pages."
+        run: echo "::warning::Faltan los secretos CLOUDFLARE_API_TOKEN o CLOUDFLARE_ACCOUNT_ID. No se publica en Cloudflare Pages."
       - name: Publicar en Cloudflare Pages
         if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
         run: pnpm exec wrangler pages deploy dist --project-name optimyzejersey --branch main
