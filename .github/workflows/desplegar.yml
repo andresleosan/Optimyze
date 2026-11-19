@@ -1,4 +1,4 @@
-# Cada push a main comprueba, compila y publica en Cloudflare Pages (https://optimyze.pages.dev).
+# Cada push a main comprueba, compila y publica en Cloudflare Pages (https://optimyze-7s1.pages.dev).
 # Necesita dos secretos en el repositorio: CLOUDFLARE_API_TOKEN (permiso «Cloudflare Pages: Edit»)
 # y CLOUDFLARE_ACCOUNT_ID.
 name: Desplegar en Cloudflare Pages
