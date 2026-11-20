@@ -64,7 +64,7 @@ export interface Contenido {
     menu: string;
     titulo: string;
     pilares: Pilar[];
-    conexion: { titulo: string; texto: string; nota: string };
+    conexion: { ancla: string; titulo: string; texto: string; nota: string };
     apoyo: { rotulo: string; titulo: string; texto: string };
   };
   trabajo: { ancla: string; menu: string; titulo: string; muestras: Muestra[] };

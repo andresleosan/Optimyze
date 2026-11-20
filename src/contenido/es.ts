@@ -70,6 +70,7 @@ export const es = {
       },
     ],
     conexion: {
+      ancla: 'como-se-conectan',
       titulo: 'Así se conectan',
       texto:
         'Una cafetería quiere conseguir encargos de desayunos para oficinas. Primero aclara qué incluye cada pedido y en qué zona entrega. Después lo hace visible en búsquedas locales y redes. Una foto enseña la ración real y un vídeo muestra cómo llega el desayuno. Una página indica cómo encargarlo. Al cierre de la campaña, los pedidos confirmados y las oficinas que vuelven a comprar ayudan a decidir si merece la pena repetirla.',

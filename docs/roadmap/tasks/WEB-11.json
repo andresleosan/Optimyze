@@ -1,0 +1,29 @@
+{
+  "id": "WEB-11",
+  "titulo": "Enlazar el ejemplo desde el índice de Servicios",
+  "estado": "hecho",
+  "responsable": "desarrollo",
+  "criterio": [
+    "El índice lleva al ejemplo que conecta los servicios en ambos idiomas, también sin JavaScript.",
+    "El acceso usa el encabezado del ejemplo y funciona como enlace directo dentro del documento.",
+    "El salto al contenido y el enlace del pilar de contenido en español tienen destinos distintos."
+  ],
+  "depende": [
+    "WEB-02"
+  ],
+  "comprueba": [],
+  "recursos": [
+    "src/components/Pagina.astro",
+    "src/contenido/",
+    "e2e/viaje.spec.ts"
+  ],
+  "hecho": "El índice lleva al ejemplo de Servicios. Se corrigió el identificador compartido por el inicio del contenido y el pilar de contenido en español.",
+  "falta": "",
+  "bloqueo": "",
+  "siguiente": "",
+  "evidencia": [
+    "Chrome a 360 y 1280 px sin JavaScript: el índice llega al pilar y al ejemplo en ambos idiomas; ningún identificador del recorrido se comparte con el salto a contenido.",
+    "Pasaron comprobación de tipos, 23 pruebas de lógica, compilación, check:release y las 34 pruebas de Chrome."
+  ],
+  "actualizado": "2026-11-20"
+}

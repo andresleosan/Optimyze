@@ -148,6 +148,11 @@ h3:focus {
   color: var(--texto-suave);
   font-size: 0.8125rem;
 }
+.cabecera nav {
+  display: flex;
+  align-items: center;
+  gap: 1.375rem;
+}
 .cabecera nav ul {
   display: flex;
   gap: 1.375rem;
@@ -405,12 +410,26 @@ main > section {
   }
   .cabecera nav {
     order: 3;
-    flex-basis: 100%;
+    flex: 1 0 100%;
+    min-width: 0;
+    gap: 0.75rem;
     margin: 0 calc(clamp(1rem, 2.8vw, 2.5rem) * -1);
     padding: 0 clamp(1rem, 2.8vw, 2.5rem);
+    border-top: 1px solid var(--linea);
+  }
+  .cabecera nav ul {
+    flex: 1;
+    min-width: 0;
     overflow-x: auto;
     scrollbar-width: none;
-    border-top: 1px solid var(--linea);
+  }
+  .cabecera nav ul a:focus-visible {
+    outline-offset: -2px;
+  }
+  .cabecera .nav-contacto {
+    flex: none;
+    border-inline-start: 1px solid var(--linea);
+    padding-inline-start: 0.75rem;
   }
   .cabecera nav a {
     padding-block: 0.625rem 0.5rem;

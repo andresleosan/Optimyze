@@ -71,6 +71,7 @@ export const en = {
       },
     ],
     conexion: {
+      ancla: 'how-they-connect',
       titulo: 'How they connect',
       texto:
         'A café wants to win breakfast orders for offices. First it makes clear what each order includes and which area it delivers to. Then it makes that visible in local searches and on social media. A photo shows the real portion and a video shows how the breakfast arrives. A page explains how to order. When the campaign ends, the confirmed orders and the offices that buy again help decide whether it is worth repeating.',

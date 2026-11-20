@@ -2,8 +2,8 @@ import { expect, test, type Page } from '@playwright/test';
 import { correoPublico, negocio } from '../src/contenido';
 
 const rutas = [
-  { inicio: '/', lang: 'en-GB', contacto: '#contact', equipo: '#about', aviso: '/privacy/' },
-  { inicio: '/es/', lang: 'es', contacto: '#contacto', equipo: '#equipo', aviso: '/es/privacidad/' },
+  { inicio: '/', lang: 'en-GB', contenido: '#content', conexion: '#how-they-connect', contacto: '#contact', equipo: '#about', aviso: '/privacy/' },
+  { inicio: '/es/', lang: 'es', contenido: '#contenido', conexion: '#como-se-conectan', contacto: '#contacto', equipo: '#equipo', aviso: '/es/privacidad/' },
 ] as const;
 
 // `?software` permite la escena en esta máquina sin GPU.
@@ -19,6 +19,8 @@ test('los dos idiomas muestran titular, menú y correo', async ({ page }) => {
     await expect(page.locator('html')).toHaveAttribute('lang', lang);
     await expect(page.locator('h1')).toBeVisible();
     await expect(page.locator('nav a')).toHaveCount(5);
+    const accesoContacto = page.locator(`nav a[href="${contacto}"]`);
+    await expect(accesoContacto).toBeInViewport({ ratio: 1 });
     const enlaceCorreo = page.locator(`${contacto} a[href^="mailto:"]`);
     if (correoPublico) {
       await expect(page.locator(`${contacto} .correo`)).toContainText(correoPublico);
@@ -30,11 +32,23 @@ test('los dos idiomas muestran titular, menú y correo', async ({ page }) => {
   }
 });
 
-test('sin JavaScript se lee todo y no hay controles inútiles', async ({ browser }) => {
-  const ctx = await browser.newContext({ javaScriptEnabled: false });
+test('sin JavaScript se lee todo y los enlaces de Servicios llegan a sus destinos', async ({ browser, viewport }) => {
+  const ctx = await browser.newContext({ javaScriptEnabled: false, viewport });
   const page = await ctx.newPage();
-  await page.goto('/es/');
-  await expect(page.locator('h1')).toBeVisible();
+  for (const { inicio, contenido, conexion, contacto } of rutas) {
+    await page.goto(inicio);
+    await expect(page.locator('h1')).toBeVisible();
+    await expect(page.locator(`nav a[href="${contacto}"]`)).toBeInViewport({ ratio: 1 });
+    await expect(page.locator('main#contenido-principal')).toHaveCount(1);
+    await expect(page.locator(contenido)).toHaveCount(1);
+    await expect(page.locator(`article${contenido} h3`)).toBeVisible();
+    await page.locator(`.indice a[href="${contenido}"]`).click();
+    await page.waitForURL((url) => url.hash === contenido);
+    await page.locator(`.indice a[href="${conexion}"]`).click();
+    await page.waitForURL((url) => url.hash === conexion);
+    await expect(page.locator(`${conexion} h3`)).toBeInViewport();
+    await expect(page.locator(conexion)).not.toHaveAttribute('data-parada', /.*/);
+  }
   await expect(page.locator('#preguntas dt')).toHaveCount(6);
   await expect(page.locator('#preguntas dd').first()).toBeVisible(); // preguntas visibles, sin acordeón
   await expect(page.locator('#pausa')).toBeHidden();

@@ -27,7 +27,7 @@ const organizacion = JSON.stringify({
 <Base idioma={idioma} titulo={c.meta.titulo} descripcion={c.meta.descripcion}>
   {idioma === 'en' && <script slot="head" type="application/ld+json" set:html={organizacion} />}
 
-  <a class="saltar" href="#contenido" data-directo>{c.ui.saltar}</a>
+  <a class="saltar" href="#contenido-principal" data-directo>{c.ui.saltar}</a>
 
   <header class="cabecera">
     <a class="marca" href={`#${c.inicio.ancla}`} aria-label={c.ui.marcaVolver}>{negocio.nombre}</a>
@@ -35,13 +35,14 @@ const organizacion = JSON.stringify({
     <nav aria-label={c.ui.secciones}>
       <ul>
         {
-          lista.slice(1).map((s) => (
+          lista.slice(1, -1).map((s) => (
             <li>
               <a href={`#${s.ancla}`}>{s.menu}</a>
             </li>
           ))
         }
       </ul>
+      <a class="nav-contacto" href={`#${c.contacto.ancla}`}>{c.contacto.menu}</a>
     </nav>
     <div class="controles">
       <a class="control" href={otro.ruta} lang={otro.html} hreflang={otro.hreflang}>{c.ui.otroIdioma}</a>
@@ -49,7 +50,7 @@ const organizacion = JSON.stringify({
     </div>
   </header>
 
-  <main id="contenido" data-pendiente={c.meta.revisado ? undefined : 'texto'}>
+  <main id="contenido-principal" data-pendiente={c.meta.revisado ? undefined : 'texto'}>
     <section id={c.inicio.ancla} data-nombre={c.inicio.menu} class="parada inicio" data-parada>
       <div class="bloque">
         <h1>{c.inicio.titular}</h1>
@@ -73,6 +74,7 @@ const organizacion = JSON.stringify({
                 </li>
               ))
             }
+            <li><a href={`#${c.servicios.conexion.ancla}`}>{c.servicios.conexion.titulo}</a></li>
           </ol>
         </div>
       </div>
@@ -89,7 +91,7 @@ const organizacion = JSON.stringify({
           </article>
         ))
       }
-      <div class="tramo">
+      <div id={c.servicios.conexion.ancla} class="tramo">
         <div class="bloque">
           <h3>{c.servicios.conexion.titulo}</h3>
           <p>{c.servicios.conexion.texto}</p>
