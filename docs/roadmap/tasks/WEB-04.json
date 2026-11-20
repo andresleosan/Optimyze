@@ -1,7 +1,7 @@
 {
   "id": "WEB-04",
   "titulo": "Separar vista previa y producción en el despliegue",
-  "estado": "pendiente",
+  "estado": "hecho",
   "responsable": "desarrollo",
   "criterio": [
     "Un push a main publica en una dirección de vista previa que no se indexa.",
@@ -16,10 +16,14 @@
     "public/_headers",
     "AGENTS.md"
   ],
-  "hecho": "",
+  "hecho": "Los pushes a main publican en el alias preview de Pages con noindex. La publicación en la rama main de Pages exige una ejecución manual sobre main con la opción de producción y la comprobación estricta.",
   "falta": "",
   "bloqueo": "",
-  "siguiente": "Hacerlo antes de conectar un dominio propio: hoy vista previa y producción son el mismo despliegue.",
-  "evidencia": [],
-  "actualizado": "2026-11-19"
+  "siguiente": "",
+  "evidencia": [
+    "Se validó el YAML y se comprobó que la rama main de Pages requiere workflow_dispatch, main y la opción produccion. El paso estricto precede a la publicación y el comando de emergencia apunta a preview.",
+    "pnpm check:release pasó. pnpm check:release --strict bloqueó la publicación al detectar los pendientes del dueño.",
+    "Documentación de los alias y noindex en Cloudflare Pages: https://developers.cloudflare.com/pages/configuration/preview-deployments/"
+  ],
+  "actualizado": "2026-11-20"
 }

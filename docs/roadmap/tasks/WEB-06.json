@@ -1,7 +1,7 @@
 {
   "id": "WEB-06",
   "titulo": "Imagen para compartir en redes",
-  "estado": "pendiente",
+  "estado": "hecho",
   "responsable": "desarrollo",
   "criterio": [
     "Cada idioma tiene una imagen de 1200 × 630 generada de un fotograma de la propia escena, con su texto alternativo.",
@@ -13,10 +13,13 @@
     "public/og/**",
     "src/layouts/Base.astro"
   ],
-  "hecho": "",
+  "hecho": "Las dos portadas publican tarjetas Open Graph y de redes con imágenes de la escena, título por idioma y texto alternativo.",
   "falta": "",
   "bloqueo": "",
-  "siguiente": "Capturar el fotograma con la ayuda ?software en una máquina con GPU o en el navegador del sistema.",
-  "evidencia": [],
-  "actualizado": "2026-11-19"
+  "siguiente": "",
+  "evidencia": [
+    "Fotograma propio de la parada de trabajo capturado con Chrome a 1200 × 630, con ?software y movimiento reducido. JPEG en inglés de 118597 B y en español de 117188 B, ambos comprobados en Chrome.",
+    "Se comprobaron las etiquetas de Open Graph y tarjeta, las rutas absolutas y el texto alternativo en el HTML compilado de los dos idiomas."
+  ],
+  "actualizado": "2026-11-20"
 }

@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  // Cloudflare Pages: solo archivos estáticos. Se publica en https://optimyzejersey.pages.dev
+  // Cloudflare Pages: solo archivos estáticos. Vista previa en https://preview.optimyzejersey.pages.dev
   "name": "optimyzejersey",
   "compatibility_date": "2026-11-19",
   "pages_build_output_dir": "./dist"

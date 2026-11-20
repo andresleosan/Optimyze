@@ -1,7 +1,7 @@
 {
   "id": "WEB-02",
   "titulo": "Prueba automática de destellos y de que el lienzo se ve",
-  "estado": "pendiente",
+  "estado": "hecho",
   "responsable": "desarrollo",
   "criterio": [
     "Un analizador mide el área que cambia de brillo en salto largo, salto corto, salto atrás, tecla Fin y barrido rápido; ninguno supera el 25 % (WCAG 2.3.1).",
@@ -14,10 +14,14 @@
     "e2e/**",
     "src/viaje/destellos.ts"
   ],
-  "hecho": "",
+  "hecho": "El recorrido mide los destellos generales del lienzo con reloj simulado y verifica que las estrellas reaparecen después de restaurar WebGL.",
   "falta": "",
   "bloqueo": "",
-  "siguiente": "Partir del analizador y la receta que dejó el repaso de la escena (carpeta de trabajo local).",
-  "evidencia": [],
-  "actualizado": "2026-11-19"
+  "siguiente": "",
+  "evidencia": [
+    "pnpm e2e: 32/32 en Chrome con Wrangler local y un worker. Se probaron salto largo, salto corto, salto atrás, Fin, barrido y restauración de WebGL a 360 y 1280 px.",
+    "Máximo medido: 0,03 % a 360 px y 1,32 % a 1280 px, frente al límite del 25 % del campo visual de 10 grados. Muestras cada 16 ms. La medición cubre luminancia general del lienzo.",
+    "Procedencia: analizador propio del repaso de la escena, WCAG 2.3.1 y técnica G19 de W3C: https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold.html"
+  ],
+  "actualizado": "2026-11-20"
 }

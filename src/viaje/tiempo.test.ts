@@ -77,6 +77,37 @@ describe('salto', () => {
   });
 });
 
+describe('ritmo de dibujo', () => {
+  it.each([60, 90, 120, 144])('dibuja 60 fotogramas por segundo con un refresco de %i Hz', (hz) => {
+    let previo: T.RitmoDibujo | null = null;
+    let dibujos = 0;
+    for (let i = 0; i < hz; i++) {
+      const ahora = i * 1000 / hz;
+      const ritmo = T.programarDibujo(ahora, 0, previo);
+      if (!ritmo) continue;
+      previo = ritmo;
+      dibujos++;
+    }
+    expect(dibujos).toBe(60);
+  });
+
+  it('reduce a 10 dibujos por segundo en reposo y recupera el ritmo con el scroll', () => {
+    let previo = T.programarDibujo(3000, 0, null);
+    expect(previo?.enReposo).toBe(true);
+    let dibujos = 0;
+    for (let ahora = 3000 + 1000 / 120; ahora < 4000; ahora += 1000 / 120) {
+      const ritmo = T.programarDibujo(ahora, 0, previo);
+      if (!ritmo) continue;
+      previo = ritmo;
+      dibujos++;
+    }
+    expect(dibujos).toBe(9);
+    const reanudado = T.programarDibujo(4000, 4000, previo);
+    expect(reanudado?.enReposo).toBe(false);
+    expect(T.programarDibujo(4000 + 1000 / 60, 4000, reanudado)).not.toBeNull();
+  });
+});
+
 describe('calidad', () => {
   const correr = (e: T.EstadoGobernador, ms: number, dt: number) => {
     const ordenes: number[] = [];

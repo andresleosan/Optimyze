@@ -124,6 +124,28 @@ export function seguirLuz(previa: number, objetivo: number, dt: number, bajada =
   return objetivo < previa ? seguir(previa, objetivo, dt, bajada) : Math.min(objetivo, previa + subidaMax * dt);
 }
 
+const INTERVALO_ACTIVO = 1000 / 60;
+const INTERVALO_REPOSO = 1000 / 10;
+const REPOSO_TRAS_MS = 3000;
+const TOLERANCIA_RELOJ = 0.25;
+
+export interface RitmoDibujo {
+  anterior: number;
+  siguiente: number;
+  enReposo: boolean;
+}
+
+/** Programa como máximo un dibujo por llamada, sin recuperar los fotogramas perdidos. */
+export function programarDibujo(ahora: number, ultimaActividad: number, previo: RitmoDibujo | null): RitmoDibujo | null {
+  const enReposo = ahora - ultimaActividad >= REPOSO_TRAS_MS;
+  const intervalo = enReposo ? INTERVALO_REPOSO : INTERVALO_ACTIVO;
+  const vencimiento = previo?.enReposo === enReposo ? previo.siguiente : (previo?.anterior ?? -Infinity) + intervalo;
+  if (ahora + TOLERANCIA_RELOJ < vencimiento) return null;
+  // Conserva la cadencia en pantallas cuyo refresco no es múltiplo de 60 Hz.
+  const base = ahora - vencimiento >= intervalo ? ahora : vencimiento;
+  return { anterior: ahora, siguiente: base + intervalo, enReposo };
+}
+
 /**
  * Gobernador de calidad. Devuelve -1 (bajar), 0 o +1 (subir un nivel a prueba).
  * - Un tirón suelto (más de 100 ms: compilación, cambio de pestaña) no cuenta.

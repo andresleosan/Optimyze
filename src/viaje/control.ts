@@ -44,6 +44,8 @@ export function montarViaje(canvas: HTMLCanvasElement): void {
   let nivel: Nivel = 'media';
   let sucio = true;
   let raf = 0;
+  let ultimaActividad = performance.now();
+  let ritmo: T.RitmoDibujo | null = null;
   const gob: T.EstadoGobernador = {};
 
   const fija = () => pausa || reducido.matches;
@@ -114,6 +116,7 @@ export function montarViaje(canvas: HTMLCanvasElement): void {
   // Cualquier gesto corta el salto: manda el visitante.
   for (const tipo of ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const)
     addEventListener(tipo, () => salto && terminarSalto(), { passive: true });
+  addEventListener('scroll', () => { ultimaActividad = performance.now(); }, { passive: true });
 
   // --- un paso del bucle ---
   function paso(ahora: number) {
@@ -177,10 +180,19 @@ export function montarViaje(canvas: HTMLCanvasElement): void {
 
   const bucle = (ahora: number) => {
     raf = requestAnimationFrame(bucle);
-    const antes = ultimo;
+    if (fija()) {
+      ritmo = null;
+      paso(ahora);
+      return;
+    }
+    if (salto) ultimaActividad = ahora;
+    const previo = ritmo;
+    const siguienteRitmo = T.programarDibujo(ahora, ultimaActividad, previo);
+    if (!siguienteRitmo) return;
+    ritmo = siguienteRitmo;
     paso(ahora);
-    if (antes != null && !fija()) {
-      const g = T.gobernador(gob, ahora - antes); // calidad según los fotogramas reales
+    if (previo && !previo.enReposo && !ritmo.enReposo) {
+      const g = T.gobernador(gob, ahora - previo.anterior);
       const siguiente = ORDEN[ORDEN.indexOf(nivel) + g];
       if (g && siguiente) {
         nivel = siguiente;
@@ -191,6 +203,8 @@ export function montarViaje(canvas: HTMLCanvasElement): void {
   const arrancar = () => {
     if (raf || document.hidden) return;
     ultimo = null;
+    ritmo = null;
+    ultimaActividad = performance.now();
     raf = requestAnimationFrame(bucle);
   };
   const parar = () => {
@@ -203,6 +217,7 @@ export function montarViaje(canvas: HTMLCanvasElement): void {
     pausa = si;
     terminarSalto();
     sucio = true;
+    ultimaActividad = performance.now();
     boton?.setAttribute('aria-pressed', String(si));
     try {
       localStorage.setItem(CLAVE_PAUSA, si ? '1' : '0');
@@ -220,6 +235,7 @@ export function montarViaje(canvas: HTMLCanvasElement): void {
   reducido.addEventListener('change', () => {
     terminarSalto();
     sucio = true;
+    ultimaActividad = performance.now();
   });
   motor.alPerder = () => {
     parar();

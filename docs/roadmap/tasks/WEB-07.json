@@ -1,7 +1,7 @@
 {
   "id": "WEB-07",
   "titulo": "Tope de 60 fotogramas por segundo y reposo de la escena",
-  "estado": "pendiente",
+  "estado": "hecho",
   "responsable": "desarrollo",
   "criterio": [
     "En pantallas de 120 Hz la escena no dibuja más de 60 fotogramas por segundo.",
@@ -14,10 +14,13 @@
     "src/viaje/control.ts",
     "src/viaje/tiempo.ts"
   ],
-  "hecho": "",
+  "hecho": "La escena se limita a 60 fps. Tras tres segundos sin desplazamiento dibuja a 10 fps y recupera el ritmo con scroll o salto. El regulador de calidad usa fotogramas activos.",
   "falta": "",
   "bloqueo": "",
-  "siguiente": "Añadir la decisión de ritmo como función pura en tiempo.ts.",
-  "evidencia": [],
-  "actualizado": "2026-11-19"
+  "siguiente": "",
+  "evidencia": [
+    "pnpm test: 23 pruebas pasaron, incluidas las simulaciones de 60, 90, 120 y 144 Hz y la transición a reposo y vuelta al scroll.",
+    "pnpm e2e: 32/32 con Chrome a 360 y 1280 px. Incluye recorrido, pausa, movimiento reducido, teclado y respaldo sin WebGL."
+  ],
+  "actualizado": "2026-11-20"
 }

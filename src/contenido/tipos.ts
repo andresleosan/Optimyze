@@ -32,7 +32,7 @@ export interface Pregunta {
 
 export interface Contenido {
   /** revisado = false mientras el dueño no apruebe el texto de este idioma: la compilación estricta falla. */
-  meta: { titulo: string; descripcion: string; revisado: boolean };
+  meta: { titulo: string; descripcion: string; imagenSocialAlt: string; revisado: boolean };
   ui: {
     saltar: string;
     marcaVolver: string;

@@ -7,6 +7,7 @@ export const en = {
     titulo: 'Optimyze · Marketing, content and websites for businesses in Jersey',
     descripcion:
       'We create content, design websites and plan campaigns for businesses in Jersey: brand, visibility, photography and video, and conversion.',
+    imagenSocialAlt: 'An amber disc surrounds a black hole in a field of stars.',
     revisado: false,
   },
   ui: {

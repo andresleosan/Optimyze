@@ -6,6 +6,7 @@ export const es = {
     titulo: 'Optimyze · Marketing, contenido y webs para negocios en Jersey',
     descripcion:
       'Creamos contenido, diseñamos webs y planificamos campañas para negocios en Jersey: marca, visibilidad, fotografía y vídeo, y conversión.',
+    imagenSocialAlt: 'Un disco ámbar rodea un agujero negro en un campo de estrellas.',
     revisado: true,
   },
   ui: {

@@ -33,11 +33,13 @@ Las variables de diseño están en `src/styles/global.css`.
 | Comprobaciones de publicación | `pnpm check:release` (con `--strict` para producción: falla si queda algo pendiente del dueño) |
 | Recorrido en navegador | `pnpm e2e` (Chrome del sistema, 360 y 1280 px, un solo worker) |
 | Ver como en Cloudflare, en local | `pnpm local` |
-| Publicar a mano | `pnpm run deploy` |
+| Publicar vista previa a mano | `pnpm run deploy` |
 
 Antes de cada commit: `pnpm check && pnpm test && pnpm build && pnpm check:release`, y `pnpm e2e` si cambia lo que se ve.
 
-Cada push a `main` llega a GitHub y `.github/workflows/desplegar.yml` comprueba, compila y publica en Cloudflare Pages (https://optimyzejersey.pages.dev). Necesita los secretos `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID` en el repositorio; sin ellos solo avisa y no publica.
+Cada push a `main` ejecuta `.github/workflows/desplegar.yml`, que comprueba, compila y publica en la rama `preview` de Cloudflare Pages (https://preview.optimyzejersey.pages.dev, con `noindex`). El flujo necesita los secretos `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID` en GitHub. Si faltan, avisa y omite la publicación.
+
+Para publicar en producción, ejecuta ese flujo en GitHub Actions sobre `main` con la opción `produccion` activada. Solo publica en la rama `main` de Pages si pasa `pnpm check:release --strict`. Conecta el dominio público cuando estén resueltos los pendientes de producción.
 
 ## Dónde está cada cosa
 
