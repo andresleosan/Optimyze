@@ -1,0 +1,27 @@
+{
+  "id": "WEB-09",
+  "titulo": "Checklist de seguimiento de la web en línea",
+  "estado": "hecho",
+  "responsable": "desarrollo",
+  "criterio": [
+    "La vista previa ofrece un checklist legible también en móvil y sin JavaScript, con búsqueda y filtro por estado cuando hay JavaScript.",
+    "Los estados se actualizan en cada despliegue desde las fichas WEB vigentes y los requisitos de publicación. Las fichas privadas quedan fuera del artefacto.",
+    "El checklist queda fuera del sitemap y de la compilación de producción."
+  ],
+  "depende": ["WEB-03", "WEB-04"],
+  "comprueba": [],
+  "recursos": [
+    "astro.config.mjs",
+    "src/components/Seguimiento.astro",
+    "scripts/check-release.mjs"
+  ],
+  "hecho": "Checklist en /es/seguimiento/ con estados de las fichas WEB y de los requisitos de publicación, regenerado al desplegar la vista previa.",
+  "falta": "",
+  "bloqueo": "",
+  "siguiente": "",
+  "evidencia": [
+    "Chrome a 360 y 1280 px: recuentos, búsqueda sin tildes, filtro por estado, actualización, ancho de página y lista completa sin JavaScript.",
+    "El sitemap y la compilación de producción excluyen la ruta. check:release contrasta los estados con los requisitos del artefacto de vista previa."
+  ],
+  "actualizado": "2026-11-20"
+}

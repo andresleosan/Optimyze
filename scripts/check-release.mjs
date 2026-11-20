@@ -65,6 +65,13 @@ for (const f of todos.filter((f) => f.endsWith('.html'))) {
 }
 if (!existsSync('dist/privacy/index.html') || !existsSync('dist/es/privacidad/index.html')) pendientes.add('privacidad');
 if (Object.values(paginas).some((h) => h.includes('https://example.com'))) pendientes.add('dominio');
+const seguimiento = 'dist/es/seguimiento/index.html';
+if (existsSync(seguimiento)) {
+  const visibles = new Set(Array.from(leer(seguimiento).matchAll(/data-requisito-pendiente="([a-z]+)"/g), (m) => m[1]));
+  if (visibles.size !== pendientes.size || [...pendientes].some((p) => !visibles.has(p))) {
+    fallos.push('seguimiento: los requisitos visibles no coinciden con la puerta de producción');
+  }
+}
 const nombres = {
   correo: 'correo de contacto sin confirmar',
   identidad: 'identidad legal sin confirmar',

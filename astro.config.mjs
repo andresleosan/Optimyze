@@ -14,5 +14,20 @@ export default defineConfig({
     defaultLocale: 'en',
     routing: { prefixDefaultLocale: false },
   },
-  integrations: [sitemap({ i18n: { defaultLocale: 'en', locales: { en: 'en', es: 'es' } } })],
+  integrations: [
+    {
+      name: 'seguimiento-en-vista-previa',
+      hooks: {
+        'astro:config:setup': ({ command, injectRoute }) => {
+          if (command === 'dev' || process.env.PUBLIC_URL_VISTA_PREVIA) {
+            injectRoute({ pattern: '/es/seguimiento', entrypoint: './src/components/Seguimiento.astro' });
+          }
+        },
+      },
+    },
+    sitemap({
+      filter: (pagina) => new URL(pagina).pathname !== '/es/seguimiento/',
+      i18n: { defaultLocale: 'en', locales: { en: 'en', es: 'es' } },
+    }),
+  ],
 });

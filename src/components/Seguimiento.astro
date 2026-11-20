@@ -1,0 +1,244 @@
+---
+import '@fontsource-variable/archivo';
+import '@fontsource-variable/atkinson-hyperlegible-next';
+import '../styles/global.css';
+import { contenidos, correoPublico, identidadPublica, negocio } from '../contenido';
+
+interface Ficha {
+  id: string;
+  titulo: string;
+  estado: string;
+  actualizado?: string;
+  aplazada?: boolean;
+}
+
+const fichas = Object.values(import.meta.glob<Ficha>('../../docs/roadmap/tasks/WEB-*.json', {
+  eager: true,
+  import: 'default',
+}));
+const estados: Record<string, string> = {
+  hecho: 'Hecha', parcial: 'En curso', pendiente: 'Pendiente',
+};
+const tareas = fichas
+  .filter((ficha) => !ficha.aplazada && ficha.estado !== 'descartado')
+  .map(({ id, titulo, estado, actualizado }) => ({ id, titulo, estado, actualizado, hecha: estado === 'hecho' }))
+  .sort((a, b) => Number(a.hecha) - Number(b.hecha) || b.id.localeCompare(a.id, 'es', { numeric: true }));
+const lenguas = Object.values(contenidos);
+const muestras = lenguas.flatMap((contenido) => contenido.trabajo.muestras);
+const requisitos = [
+  { id: 'correo', titulo: 'Confirmar el correo de contacto', hecha: Boolean(correoPublico) },
+  { id: 'identidad', titulo: 'Confirmar la identidad legal', hecha: Boolean(identidadPublica) },
+  { id: 'registro', titulo: 'Confirmar el registro de protección de datos', hecha: negocio.registroPrivacidad.confirmado && Boolean(negocio.registroPrivacidad.numero.trim()) },
+  { id: 'privacidad', titulo: 'Aprobar el aviso de privacidad en los dos idiomas', hecha: negocio.avisoPrivacidad.confirmado },
+  { id: 'perfiles', titulo: 'Confirmar los perfiles profesionales que se enlazan', hecha: negocio.perfiles.confirmado },
+  { id: 'permiso', titulo: 'Confirmar los permisos de las muestras o retirarlas', hecha: muestras.every((muestra) => muestra.aprobada) },
+  { id: 'imagen', titulo: 'Incorporar imágenes autorizadas a las muestras que se mantengan', hecha: muestras.every((muestra) => Boolean(muestra.imagen)) },
+  { id: 'texto', titulo: 'Aprobar los textos de los dos idiomas', hecha: lenguas.every((contenido) => contenido.meta.revisado) },
+  { id: 'dominio', titulo: 'Definir el dominio de producción', hecha: Boolean(Astro.site && Astro.site.hostname !== 'example.com') },
+].sort((a, b) => Number(a.hecha) - Number(b.hecha));
+
+const entregadas = tareas.filter((tarea) => tarea.hecha).length;
+const requisitosListos = requisitos.filter((requisito) => requisito.hecha).length;
+const ultimaFicha = tareas.map((tarea) => tarea.actualizado ?? '').sort().at(-1);
+const instanteFicha = new Date(`${ultimaFicha}T00:00:00Z`);
+const fecha = new Intl.DateTimeFormat('es', { dateStyle: 'medium', timeZone: 'UTC' });
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Seguimiento de la web · Optimyze</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="barra">
+      <div class="marco">
+        <span class="identidad">Optimyze</span>
+        <a class="enlace" href="/es/">Ver la web</a>
+      </div>
+    </header>
+    <main class="marco">
+      <div class="portada-panel">
+        <h1>Seguimiento<br /> de la web</h1>
+        <p>El checklist se actualiza cuando se publica una nueva vista previa.</p>
+      </div>
+
+      <div class="resumen" role="group" aria-label="Resumen del avance">
+        <div class="indicador">
+          <span class="etiqueta" id="resumen-lanzamiento">Requisitos de publicación</span>
+          <p><strong>{requisitosListos}<span> / {requisitos.length}</span></strong> listos</p>
+          <progress value={requisitosListos} max={requisitos.length} aria-labelledby="resumen-lanzamiento"></progress>
+        </div>
+        <div class="indicador">
+          <span class="etiqueta" id="resumen-web">Tareas de la web</span>
+          <p><strong>{entregadas}<span> / {tareas.length}</span></strong> hechas</p>
+          <progress value={entregadas} max={tareas.length || 1} aria-labelledby="resumen-web"></progress>
+        </div>
+      </div>
+
+      <div class="herramientas">
+        <div class="filtros" hidden>
+          <label>Buscar <input id="buscar" type="search" placeholder="Título o código" /></label>
+          <label>Estado
+            <select id="estado">
+              <option value="todas">Todos</option>
+              <option value="abiertas">Por hacer</option>
+              <option value="hechas">Hechas</option>
+            </select>
+          </label>
+        </div>
+        <a class="enlace" href={Astro.url.pathname}>Actualizar ahora</a>
+      </div>
+      <p id="resultados" class="solo-lectura" role="status"></p>
+      <p id="sin-resultados" class="vacio" hidden>El filtro no encuentra tareas. Prueba con otro texto o estado.</p>
+
+      <section data-grupo aria-labelledby="publicacion">
+        <div class="titulo-lista">
+          <h2 id="publicacion">Antes de publicar</h2>
+          <span>{requisitos.length - requisitosListos} por resolver</span>
+        </div>
+        <ul class="checklist" role="list">
+          {requisitos.map((tarea) => (
+            <li data-tarea data-requisito-pendiente={tarea.hecha ? undefined : tarea.id} data-hecha={String(tarea.hecha)}>
+              <span class="casilla" aria-hidden="true"></span>
+              <span class="descripcion">{tarea.titulo}</span>
+              <span class="estado">{tarea.hecha ? 'Listo' : 'Pendiente'}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section data-grupo aria-labelledby="construccion">
+        <div class="titulo-lista">
+          <h2 id="construccion">Construcción de la web</h2>
+          {ultimaFicha && Number.isFinite(instanteFicha.getTime()) && (
+            <span>Última ficha · <time datetime={ultimaFicha}>{fecha.format(instanteFicha)}</time></span>
+          )}
+        </div>
+        <ul class="checklist" role="list">
+          {tareas.map((tarea) => (
+            <li data-tarea data-hecha={String(tarea.hecha)}>
+              <span class="casilla" aria-hidden="true"></span>
+              <span class="descripcion"><span class="codigo">{tarea.id}</span> {tarea.titulo}</span>
+              <span class="estado">{estados[tarea.estado] ?? tarea.estado}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>
+
+<script>
+  const filtros = document.querySelector<HTMLDivElement>('.filtros')!;
+  const buscar = document.querySelector<HTMLInputElement>('#buscar')!;
+  const estado = document.querySelector<HTMLSelectElement>('#estado')!;
+  const resultados = document.querySelector<HTMLParagraphElement>('#resultados')!;
+  const sinResultados = document.querySelector<HTMLParagraphElement>('#sin-resultados')!;
+  const grupos = Array.from(document.querySelectorAll<HTMLElement>('[data-grupo]'), (grupo) => ({
+    grupo,
+    tareas: Array.from(grupo.querySelectorAll<HTMLLIElement>('[data-tarea]')),
+  }));
+  const normalizar = (texto: string) => texto.toLocaleLowerCase('es').normalize('NFD').replace(/\p{Diacritic}/gu, '');
+
+  function filtrar() {
+    const texto = normalizar(buscar.value.trim());
+    let visibles = 0;
+    for (const { grupo, tareas } of grupos) {
+      for (const tarea of tareas) {
+        const coincideEstado = estado.value === 'todas' || (estado.value === 'hechas') === (tarea.dataset.hecha === 'true');
+        tarea.hidden = !coincideEstado || !normalizar(tarea.textContent ?? '').includes(texto);
+        if (!tarea.hidden) visibles++;
+      }
+      grupo.hidden = tareas.every((tarea) => tarea.hidden);
+    }
+    sinResultados.hidden = visibles !== 0;
+    resultados.textContent = visibles === 1 ? '1 resultado' : `${visibles} resultados`;
+  }
+
+  filtros.hidden = false;
+  buscar.addEventListener('input', filtrar);
+  estado.addEventListener('change', filtrar);
+  window.addEventListener('pageshow', filtrar);
+</script>
+
+<style>
+  :global(html) {
+    background: var(--vacio);
+    scroll-padding-top: 0;
+  }
+
+  .marco { width: min(68rem, 100% - 2.5rem); margin-inline: auto; }
+  .barra { border-bottom: 1px solid var(--linea); }
+  .barra .marco, .herramientas, .titulo-lista { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .barra .marco { min-height: 4rem; }
+  .identidad { font: 650 1.45rem var(--fuente-titular); text-decoration: none; }
+  .enlace { color: var(--ambar); text-underline-offset: 0.2em; font-size: 0.9375rem; display: inline-flex; align-items: center; min-height: 2.75rem; }
+  .enlace:hover { text-decoration-thickness: 2px; }
+  main { padding-bottom: clamp(3rem, 8vw, 6rem); }
+
+  .portada-panel {
+    padding-block: clamp(2.75rem, 7vw, 5.5rem) 2.25rem;
+    display: flex;
+    gap: 0.9rem 3.5rem;
+    justify-content: space-between;
+    align-items: end;
+    flex-wrap: wrap;
+    background: radial-gradient(ellipse at 34% 78%, color-mix(in srgb, var(--ambar) 9%, transparent), transparent 66%);
+  }
+
+  .portada-panel h1 { font-size: clamp(2.5rem, 1.5rem + 4.7vw, 5.4rem); letter-spacing: -0.055em; line-height: 0.97; margin: 0; }
+  .portada-panel p { color: var(--texto-suave); max-width: 15rem; margin: 0; font-size: 1.05rem; }
+  .resumen { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; border: 1px solid var(--linea); background: var(--linea); }
+  .indicador { display: flex; flex-direction: column; background: var(--sombra); padding: clamp(1rem, 2.6vw, 1.75rem); }
+  .indicador .etiqueta { flex: 1; font-size: 0.9375rem; color: var(--texto-suave); }
+  .indicador p { margin: 0.25rem 0 0.6rem; color: var(--texto-suave); font-size: 0.9375rem; }
+  .indicador strong { color: var(--ambar); font: 600 clamp(1.65rem, 4vw, 2.55rem)/1 var(--fuente-titular); font-variant-numeric: tabular-nums; }
+  .indicador strong span { color: var(--texto-suave); font-size: 0.72em; }
+  progress { display: block; width: 100%; height: 0.45rem; border: 0; background: var(--linea); accent-color: var(--ambar); }
+  progress::-webkit-progress-bar { background: var(--linea); }
+  progress::-webkit-progress-value { background: var(--ambar); }
+
+  .herramientas { margin-block: 2rem 2.25rem; align-items: end; flex-wrap: wrap; }
+  .filtros { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .filtros label { display: grid; gap: 0.25rem; color: var(--texto-suave); font-size: 0.9rem; }
+  .filtros :is(input, select) {
+    min-height: 2.75rem;
+    width: 100%;
+    padding: 0.4rem 0.65rem;
+    background: var(--sombra);
+    color: var(--texto);
+    border: 1px solid var(--borde);
+    border-radius: 0.25rem;
+    font: inherit;
+    font-size: 1rem;
+  }
+  .filtros input::placeholder { color: var(--texto-suave); }
+  .solo-lectura { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .vacio { color: var(--texto-suave); }
+  [hidden] { display: none !important; }
+
+  [data-grupo] { padding-inline: 0; }
+  [data-grupo] + [data-grupo] { margin-top: 2.75rem; }
+  .titulo-lista { align-items: baseline; gap: 0.35rem 1rem; flex-wrap: wrap; margin-bottom: 0.7rem; }
+  .titulo-lista h2 { font-size: clamp(1.25rem, 3vw, 1.6rem); margin: 0; }
+  .titulo-lista span { color: var(--texto-suave); font-size: 0.875rem; }
+  .checklist { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--linea); }
+  .checklist li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: first baseline; gap: 0.65rem; min-height: 3rem; padding-block: 0.7rem; border-bottom: 1px solid var(--linea); font-size: 1rem; }
+  .casilla { position: relative; top: 0.08em; width: 1rem; height: 1rem; border: 1px solid var(--borde); border-radius: 0.14rem; }
+  [data-hecha='true'] .casilla { background: var(--ambar); border-color: var(--ambar); color: var(--sobre-ambar); }
+  [data-hecha='true'] .casilla::after { content: ''; position: absolute; width: 0.34rem; height: 0.57rem; top: 0.11rem; left: 0.29rem; border: solid currentColor; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .estado { font-size: 0.875rem; color: var(--texto-suave); }
+  [data-hecha='true'] .estado { color: var(--ambar); }
+  .codigo { font-size: 0.875rem; margin-right: 0.35rem; color: var(--texto-suave); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 34rem) {
+    .herramientas { gap: 0.4rem; }
+    .filtros { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+    .checklist li { gap: 0.5rem; }
+    .codigo { display: block; }
+  }
+</style>
