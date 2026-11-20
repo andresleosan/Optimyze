@@ -1,0 +1,27 @@
+{
+  "id": "WEB-12",
+  "titulo": "Mantener la sección al cambiar de idioma",
+  "estado": "pendiente",
+  "responsable": "desarrollo",
+  "criterio": [
+    "El conmutador abre la sección equivalente en ambos sentidos, también desde un enlace directo o después de desplazarse por la página.",
+    "Al cambiar desde Inicio o desde una sección sin equivalente se abre la portada del otro idioma.",
+    "El conmutador funciona con teclado, movimiento reducido y sin WebGL. Sin JavaScript sigue enlazando a la portada del otro idioma."
+  ],
+  "depende": ["WEB-02", "WEB-11"],
+  "comprueba": [],
+  "recursos": [
+    "src/components/Pagina.astro",
+    "src/contenido/",
+    "src/viaje/pagina.ts",
+    "e2e/viaje.spec.ts"
+  ],
+  "hecho": "",
+  "falta": "El enlace cambia de idioma pero lleva a Inicio aunque el visitante ya esté leyendo otra sección.",
+  "bloqueo": "",
+  "siguiente": "Usar la sección activa para enlazar a su equivalente en el otro idioma y comprobar el resultado a 360 y 1280 px.",
+  "evidencia": [
+    "Chrome a 360 px: al cambiar de idioma desde Quiénes somos y About us se pierde el fragmento en ambas direcciones."
+  ],
+  "actualizado": "2026-11-20"
+}
