@@ -60,10 +60,17 @@ if (lista && existsSync(lista)) {
 
 // 6. Lo que solo el dueño puede cerrar. En vista previa se lista; en producción bloquea.
 const pendientes = new Set();
-for (const html of Object.values(paginas)) for (const m of html.matchAll(/data-pendiente="([a-z]+)"/g)) pendientes.add(m[1]);
+for (const f of todos.filter((f) => f.endsWith('.html'))) {
+  for (const m of leer(f).matchAll(/data-pendiente="([a-z]+)"/g)) pendientes.add(m[1]);
+}
+if (!existsSync('dist/privacy/index.html') || !existsSync('dist/es/privacidad/index.html')) pendientes.add('privacidad');
 if (Object.values(paginas).some((h) => h.includes('https://example.com'))) pendientes.add('dominio');
 const nombres = {
   correo: 'correo de contacto sin confirmar',
+  identidad: 'identidad legal sin confirmar',
+  registro: 'registro de protección de datos sin confirmar',
+  privacidad: 'aviso de privacidad bilingüe sin aprobar',
+  perfiles: 'perfiles profesionales sin confirmar',
   permiso: 'muestras de trabajo sin permiso confirmado',
   imagen: 'muestras de trabajo sin imagen',
   texto: 'texto de un idioma sin revisar por el dueño',

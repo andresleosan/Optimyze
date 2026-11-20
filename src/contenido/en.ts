@@ -19,7 +19,11 @@ export const en = {
     pausar: 'Pause animation',
     otroIdioma: 'Español',
     pendienteImagen: 'Image awaiting authorisation',
-    correoProvisional: 'Provisional address',
+    correoPendiente: 'Contact email pending confirmation.',
+    identidadPendiente: 'Legal identity pending confirmation.',
+    registroPendiente: 'Data protection registration pending confirmation.',
+    etiquetaRegistro: 'Data protection registration',
+    perfilesPendientes: 'Professional profiles pending confirmation.',
     noEncontrada: "This page doesn't exist.",
     volverInicio: 'Back to the start',
   },
@@ -143,6 +147,62 @@ export const en = {
         pregunta: 'How do I ask for information, and how much does it cost?',
         respuesta:
           'Email us. Just tell us what you would like to improve. We will explain which options fit and, once we know what the work involves, we can send you a scope and a price.',
+      },
+    ],
+  },
+  aviso: {
+    titulo: 'Privacy notice',
+    descripcion: 'How Optimyze handles information when you visit this website or send an enquiry.',
+    borrador: 'Draft pending review by Optimyze and a Jersey data protection professional.',
+    responsable: 'Who is responsible for your data',
+    correoPendiente: 'The contact address for privacy requests is pending confirmation.',
+    representantePendiente: 'The legal identity of the controller and contact details for any representative or data protection officer are pending confirmation.',
+    fecha: 'Draft updated on',
+    idiomaAlterno: 'Español',
+    queja: 'Raise a concern with the Jersey Office of the Information Commissioner',
+    secciones: [
+      {
+        titulo: 'Visiting this website',
+        parrafos: [
+          'Cloudflare Pages serves this site. Cloudflare may process technical data such as your IP address to deliver pages and protect the service. The applicable lawful basis and the details of any security logs are pending confirmation.',
+        ],
+      },
+      {
+        titulo: 'Sending an enquiry',
+        parrafos: [
+          'Sending an enquiry is voluntary. If you email us, your provider sends your message. We use the address and the information you include to answer your enquiry. We need a valid return address to reply. Include only the details needed to understand your request.',
+          'The lawful basis for handling enquiries is pending confirmation. Possible bases for review include steps you request before entering a contract and a legitimate interest in answering general enquiries.',
+        ],
+      },
+      {
+        titulo: 'What your browser remembers',
+        parrafos: [
+          'The pause button saves your motion preference in your browser on this device. The site uses it only to remember whether you paused the animation. You can remove the preference by clearing this site’s data in your browser.',
+        ],
+      },
+      {
+        titulo: 'Who receives data and how long it is kept',
+        parrafos: [
+          'Cloudflare provides the hosting. The email provider and any other recipients are pending confirmation, together with any transfers outside Jersey, the protection in place and how to ask for more detail. The retention periods or criteria for enquiry messages and any logs are also pending confirmation.',
+        ],
+      },
+      {
+        titulo: 'Your rights',
+        parrafos: [
+          'Where the law applies, you can ask to see, correct or erase your data, restrict or object to its use, or ask us to transfer it. If we rely on consent, you can withdraw it. Use the contact details above to make a request. You can also complain to the Jersey Office of the Information Commissioner.',
+        ],
+      },
+      {
+        titulo: 'Automated decisions',
+        parrafos: [
+          'The website displays information and uses your motion preference to adjust the animation. The arrangements for handling and securing enquiries are pending confirmation.',
+        ],
+      },
+      {
+        titulo: 'Changes to this notice',
+        parrafos: [
+          'We will publish revisions on this page and update the date.',
+        ],
       },
     ],
   },

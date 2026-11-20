@@ -1,7 +1,7 @@
 {
   "id": "WEB-03",
   "titulo": "Puerta de producción completa: identidad, aviso de privacidad, registro y perfiles",
-  "estado": "pendiente",
+  "estado": "hecho",
   "responsable": "desarrollo",
   "criterio": [
     "Los datos del negocio incluyen identidad legal, registro de protección de datos, aviso de privacidad y perfiles, cada uno con su marca de confirmado.",
@@ -15,10 +15,14 @@
     "scripts/check-release.mjs",
     "src/components/Pagina.astro"
   ],
-  "hecho": "",
+  "hecho": "El pie bilingüe muestra la identidad legal, el registro de protección de datos, el aviso y los perfiles cuando están confirmados o indica que se esperan esos datos. Se retiró la dirección provisional y la comprobación estricta detecta todos los pendientes.",
   "falta": "",
   "bloqueo": "",
-  "siguiente": "Añadir los campos a negocio y sus nombres a la lista de pendientes de check-release.",
-  "evidencia": [],
-  "actualizado": "2026-11-19"
+  "siguiente": "",
+  "evidencia": [
+    "pnpm check, pnpm test (23 pruebas), pnpm build y pnpm check:release pasaron.",
+    "pnpm check:release --strict falló como se esperaba y enumeró 9 pendientes, incluidos identidad legal, registro, aviso y perfiles.",
+    "pnpm e2e: 34/34 en Chrome a 360 y 1280 px. Se comprobó el estado del correo, el teclado, el movimiento reducido y el respaldo sin WebGL en ambas portadas."
+  ],
+  "actualizado": "2026-11-20"
 }

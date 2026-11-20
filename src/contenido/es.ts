@@ -18,7 +18,11 @@ export const es = {
     pausar: 'Pausar animación',
     otroIdioma: 'English',
     pendienteImagen: 'Imagen pendiente de autorización',
-    correoProvisional: 'Dirección provisional',
+    correoPendiente: 'Correo de contacto pendiente de confirmar.',
+    identidadPendiente: 'Identidad legal pendiente de confirmar.',
+    registroPendiente: 'Registro de protección de datos pendiente de confirmar.',
+    etiquetaRegistro: 'Registro de protección de datos',
+    perfilesPendientes: 'Perfiles profesionales pendientes de confirmar.',
     noEncontrada: 'Esta página no existe.',
     volverInicio: 'Volver al inicio',
   },
@@ -143,6 +147,62 @@ export const es = {
         pregunta: '¿Cómo pido información y cuánto cuesta?',
         respuesta:
           'Escríbenos por correo. Basta con decirnos qué te gustaría mejorar. Te explicaremos qué opciones encajan y, cuando sepamos qué trabajo incluye, podremos enviarte alcance y precio.',
+      },
+    ],
+  },
+  aviso: {
+    titulo: 'Aviso de privacidad',
+    descripcion: 'Cómo trata Optimyze la información cuando visitas esta web o envías una consulta.',
+    borrador: 'Borrador pendiente de revisión por Optimyze y por un profesional de protección de datos de Jersey.',
+    responsable: 'Quién es responsable de tus datos',
+    correoPendiente: 'La dirección de contacto para solicitudes de privacidad está pendiente de confirmar.',
+    representantePendiente: 'Quedan por confirmar la identidad legal del responsable y los datos de contacto del representante o delegado de protección de datos, si corresponde.',
+    fecha: 'Borrador actualizado el',
+    idiomaAlterno: 'English',
+    queja: 'Presentar una consulta o reclamación ante la Oficina del Comisionado de Información de Jersey',
+    secciones: [
+      {
+        titulo: 'Cuando visitas esta web',
+        parrafos: [
+          'Cloudflare Pages aloja esta web. Cloudflare puede tratar datos técnicos, como tu dirección IP, para servir las páginas y proteger el servicio. Quedan por confirmar la base jurídica aplicable y los detalles de los registros de seguridad, si los hay.',
+        ],
+      },
+      {
+        titulo: 'Cuando envías una consulta',
+        parrafos: [
+          'Enviar una consulta es voluntario. Si nos escribes, tu proveedor de correo envía el mensaje. Usamos tu dirección y los datos que incluyas para responderte. Para poder contestarte necesitamos una dirección de respuesta válida. Incluye solo los detalles necesarios para entender tu consulta.',
+          'La base jurídica para atender consultas está pendiente de confirmar. Entre las posibles bases por revisar están las gestiones previas a un contrato que solicites y el interés legítimo en responder consultas generales.',
+        ],
+      },
+      {
+        titulo: 'Qué recuerda tu navegador',
+        parrafos: [
+          'El botón de pausa guarda tu preferencia de movimiento en el navegador de este dispositivo. La web la usa solo para recordar si pausaste la animación. Puedes eliminar la preferencia borrando los datos de este sitio en tu navegador.',
+        ],
+      },
+      {
+        titulo: 'Quién recibe los datos y cuánto tiempo se guardan',
+        parrafos: [
+          'Cloudflare presta el servicio de alojamiento. Quedan por confirmar el proveedor de correo, otros destinatarios, las posibles transferencias fuera de Jersey, sus garantías y cómo pedir más detalles. También quedan por confirmar los plazos o criterios de conservación de los mensajes y los registros que se generen.',
+        ],
+      },
+      {
+        titulo: 'Tus derechos',
+        parrafos: [
+          'Cuando corresponda según la ley, puedes pedir acceso a tus datos, corregirlos o borrarlos, limitar su uso, oponerte a su tratamiento o pedir su portabilidad. Si el tratamiento se basa en el consentimiento, puedes retirarlo. Usa los datos de contacto indicados arriba para hacer una solicitud. También puedes reclamar ante la Oficina del Comisionado de Información de Jersey.',
+        ],
+      },
+      {
+        titulo: 'Decisiones automatizadas',
+        parrafos: [
+          'La web muestra información y usa tu preferencia de movimiento para ajustar la animación. Queda por confirmar cómo se atenderán y protegerán las consultas recibidas.',
+        ],
+      },
+      {
+        titulo: 'Cambios en este aviso',
+        parrafos: [
+          'Publicaremos los cambios en esta página y actualizaremos la fecha.',
+        ],
       },
     ],
   },

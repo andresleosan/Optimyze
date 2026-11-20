@@ -1,0 +1,60 @@
+---
+import Base from '../layouts/Base.astro';
+import { contenidos, correoPublico, identidadPublica, idiomas, negocio, rutasPrivacidad } from '../contenido';
+import type { Idioma } from '../contenido/tipos';
+
+const { idioma } = Astro.props as { idioma: Idioma };
+const { aviso, ui } = contenidos[idioma];
+const otro = idioma === 'en' ? 'es' : 'en';
+const pendiente = !negocio.avisoPrivacidad.confirmado;
+const fecha = '2026-11-20';
+const fechaLocal = new Intl.DateTimeFormat(idiomas[idioma].html, { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(fecha));
+---
+
+<Base idioma={idioma} titulo={`${aviso.titulo} · ${negocio.nombre}`} descripcion={aviso.descripcion} alternas={rutasPrivacidad}>
+  <main>
+    <section class="tramo">
+      <article class="bloque aviso">
+        <p class="acciones">
+          <a href={idiomas[idioma].ruta}>{ui.volverInicio}</a>
+          <a href={rutasPrivacidad[otro]} lang={idiomas[otro].html} hreflang={idiomas[otro].hreflang}>{aviso.idiomaAlterno}</a>
+        </p>
+        <h1>{aviso.titulo}</h1>
+        {pendiente && <p class="nota" data-pendiente="privacidad">{aviso.borrador}</p>}
+        <p>{aviso.descripcion}</p>
+        <p>{aviso.fecha} <time datetime={fecha}>{fechaLocal}</time></p>
+
+        <section>
+          <h2>{aviso.responsable}</h2>
+          <p>{negocio.nombre} · Jersey</p>
+          {identidadPublica && <p>{identidadPublica.nombreLegal} · {identidadPublica.direccion}</p>}
+          {pendiente && <p>{aviso.representantePendiente}</p>}
+          {correoPublico ? <p><a href={`mailto:${correoPublico}`}>{correoPublico}</a></p> : <p>{aviso.correoPendiente}</p>}
+        </section>
+
+        {aviso.secciones.map(({ titulo, parrafos }) => (
+          <section>
+            <h2>{titulo}</h2>
+            {parrafos.map((parrafo) => <p>{parrafo}</p>)}
+          </section>
+        ))}
+        <p><a href="https://www.jerseyoic.org/raise-a-concern">{aviso.queja}</a></p>
+      </article>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .aviso {
+    margin-inline: auto;
+  }
+  .aviso h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+  }
+  .aviso h2 {
+    font-size: 1.5rem;
+  }
+  .aviso section {
+    margin-block-start: 2rem;
+  }
+</style>

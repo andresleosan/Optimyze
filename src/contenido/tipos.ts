@@ -43,7 +43,11 @@ export interface Contenido {
     pausar: string;
     otroIdioma: string;
     pendienteImagen: string;
-    correoProvisional: string;
+    correoPendiente: string;
+    identidadPendiente: string;
+    registroPendiente: string;
+    etiquetaRegistro: string;
+    perfilesPendientes: string;
     noEncontrada: string;
     volverInicio: string;
   };
@@ -66,6 +70,18 @@ export interface Contenido {
   trabajo: { ancla: string; menu: string; titulo: string; muestras: Muestra[] };
   equipo: { ancla: string; menu: string; titulo: string; texto: string };
   preguntas: { ancla: string; menu: string; titulo: string; lista: Pregunta[] };
+  aviso: {
+    titulo: string;
+    descripcion: string;
+    borrador: string;
+    responsable: string;
+    correoPendiente: string;
+    representantePendiente: string;
+    fecha: string;
+    idiomaAlterno: string;
+    queja: string;
+    secciones: { titulo: string; parrafos: string[] }[];
+  };
   contacto: {
     ancla: string;
     menu: string;

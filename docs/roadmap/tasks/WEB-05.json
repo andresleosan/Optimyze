@@ -1,7 +1,7 @@
 {
   "id": "WEB-05",
   "titulo": "Página de aviso de privacidad en los dos idiomas",
-  "estado": "pendiente",
+  "estado": "hecho",
   "responsable": "desarrollo",
   "criterio": [
     "Existe una página de aviso enlazada desde el pie y junto al correo, en español e inglés.",
@@ -16,10 +16,14 @@
     "src/pages/**",
     "src/contenido/aviso*"
   ],
-  "hecho": "",
+  "hecho": "Aviso bilingüe en /privacy/ y /es/privacidad/, enlazado en Contacto y en el pie. Describe el alojamiento, las consultas y la preferencia local de pausa. Los datos que requieren confirmación y la revisión profesional quedan señalados en el borrador.",
   "falta": "",
   "bloqueo": "",
-  "siguiente": "Redactar el borrador solo con hechos comprobados del alojamiento y sin inventar datos del negocio.",
-  "evidencia": [],
-  "actualizado": "2026-11-19"
+  "siguiente": "",
+  "evidencia": [
+    "pnpm build generó las dos páginas. pnpm e2e verificó en ambos tamaños y sin JavaScript los enlaces, los idiomas, el marcador de borrador y el ancho de lectura.",
+    "Se cotejaron los apartados con el artículo 12 de la ley de Jersey y la lista de comprobación oficial de JOIC: https://www.jerseylaw.je/laws/current/l_3_2018 y https://jerseyoic.org/media/guidance-downloads/checklist-drafting-a-data-protection-statement_privacy-notice.pdf",
+    "pnpm check:release --strict bloquea la publicación de un aviso sin aprobar o sin ruta en cualquiera de los dos idiomas."
+  ],
+  "actualizado": "2026-11-20"
 }

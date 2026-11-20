@@ -10,14 +10,38 @@ export const idiomas: Record<Idioma, { html: string; hreflang: string; ruta: str
   es: { html: 'es', hreflang: 'es', ruta: '/es/' },
 };
 
+export const rutasPrivacidad = { en: '/privacy/', es: '/es/privacidad/' };
+
+interface Identidad {
+  nombreLegal: string;
+  forma: string;
+  direccion: string;
+  numeroRegistro?: string;
+}
+
+interface Perfil {
+  nombre: string;
+  url: string;
+}
+
 /**
  * Datos del negocio que solo puede confirmar el dueño. Mientras `confirmado` sea false,
  * `pnpm check:release --strict` falla y la web no puede ir a producción.
  */
 export const negocio = {
   nombre: 'Optimyze',
-  correo: { direccion: 'hola@example.com', confirmado: false },
+  correo: { direccion: '', confirmado: false },
+  identidad: { datos: null as Identidad | null, confirmado: false },
+  registroPrivacidad: { numero: '', confirmado: false },
+  avisoPrivacidad: { confirmado: false },
+  perfiles: { enlaces: [] as Perfil[], confirmado: false },
 };
+
+const datosIdentidad = negocio.identidad.datos;
+export const identidadPublica = negocio.identidad.confirmado
+  && datosIdentidad?.nombreLegal.trim() && datosIdentidad.forma.trim() && datosIdentidad.direccion.trim()
+  ? datosIdentidad : null;
+export const correoPublico = negocio.correo.confirmado ? negocio.correo.direccion.trim() : '';
 
 /** Secciones de primer nivel, en orden. De aquí salen el menú y el contador «2 de 6». */
 export function secciones(c: Contenido) {

@@ -1,4 +1,10 @@
 import { expect, test, type Page } from '@playwright/test';
+import { correoPublico, negocio } from '../src/contenido';
+
+const rutas = [
+  { inicio: '/', lang: 'en-GB', contacto: '#contact', equipo: '#about', aviso: '/privacy/' },
+  { inicio: '/es/', lang: 'es', contacto: '#contacto', equipo: '#equipo', aviso: '/es/privacidad/' },
+] as const;
 
 // `?software` permite la escena en esta máquina sin GPU.
 const conEscena = async (page: Page, ruta = '/es/') => {
@@ -8,13 +14,19 @@ const conEscena = async (page: Page, ruta = '/es/') => {
 const contenidoVisible = (page: Page) => page.evaluate(() => getComputedStyle(document.querySelector('main')!).opacity);
 
 test('los dos idiomas muestran titular, menú y correo', async ({ page }) => {
-  for (const [ruta, lang, contacto] of [['/', 'en-GB', '#contact'], ['/es/', 'es', '#contacto']] as const) {
-    await page.goto(ruta);
+  for (const { inicio, lang, contacto } of rutas) {
+    await page.goto(inicio);
     await expect(page.locator('html')).toHaveAttribute('lang', lang);
     await expect(page.locator('h1')).toBeVisible();
     await expect(page.locator('nav a')).toHaveCount(5);
-    await expect(page.locator(`${contacto} .correo`)).toContainText('@');
-    await expect(page.locator(`${contacto} a[href^="mailto:"]`)).toBeVisible();
+    const enlaceCorreo = page.locator(`${contacto} a[href^="mailto:"]`);
+    if (correoPublico) {
+      await expect(page.locator(`${contacto} .correo`)).toContainText(correoPublico);
+      await expect(enlaceCorreo).toBeVisible();
+    } else {
+      await expect(page.locator(`${contacto} [data-pendiente="correo"]`)).toBeVisible();
+      await expect(enlaceCorreo).toHaveCount(0);
+    }
   }
 });
 
@@ -33,12 +45,14 @@ test('sin WebGL la página queda con el respaldo y los enlaces saltan como ancla
   await page.addInitScript(() => {
     HTMLCanvasElement.prototype.getContext = () => null;
   });
-  await page.goto('/es/');
-  await page.locator('nav a[href="#contacto"]').click();
-  await expect(page).toHaveURL(/#contacto$/);
-  await expect(page.locator('html')).not.toHaveAttribute('data-viaje', 'vivo');
-  await expect(page.locator('#pausa')).toBeHidden();
-  expect(await contenidoVisible(page)).toBe('1');
+  for (const { inicio, contacto } of rutas) {
+    await page.goto(inicio);
+    await page.locator(`nav a[href="${contacto}"]`).click();
+    await expect(page).toHaveURL(new RegExp(`${contacto}$`));
+    await expect(page.locator('html')).not.toHaveAttribute('data-viaje', 'vivo');
+    await expect(page.locator('#pausa')).toBeHidden();
+    expect(await contenidoVisible(page)).toBe('1');
+  }
 });
 
 test('el enlace de sección salta: historial, foco en el encabezado y contenido visible', async ({ page }) => {
@@ -69,20 +83,44 @@ test('pausar a mitad de un salto no deja la página sin contenido', async ({ pag
 
 test('con movimiento reducido no hay salto animado', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await conEscena(page);
-  await page.locator('nav a[href="#equipo"]').click();
-  await expect(page).toHaveURL(/#equipo$/);
-  await expect(page.locator('html')).not.toHaveAttribute('data-salto', /.*/);
-  expect(await contenidoVisible(page)).toBe('1');
+  for (const { inicio, equipo } of rutas) {
+    await conEscena(page, inicio);
+    await page.locator(`nav a[href="${equipo}"]`).click();
+    await expect(page).toHaveURL(new RegExp(`${equipo}$`));
+    await expect(page.locator('html')).not.toHaveAttribute('data-salto', /.*/);
+    expect(await contenidoVisible(page)).toBe('1');
+  }
 });
 
 test('teclado: el primer Tab ofrece saltar al contenido y el control de pausa es alcanzable', async ({ page }) => {
-  await conEscena(page);
-  await page.keyboard.press('Tab');
-  await expect(page.locator('.saltar')).toBeFocused();
-  await expect(page.locator('#pausa')).toBeVisible();
-  const caja = await page.locator('#pausa').boundingBox();
-  expect(caja!.height).toBeGreaterThanOrEqual(24); // WCAG 2.5.8
+  for (const { inicio } of rutas) {
+    await conEscena(page, inicio);
+    await page.keyboard.press('Tab');
+    await expect(page.locator('.saltar')).toBeFocused();
+    await expect(page.locator('#pausa')).toBeVisible();
+    const caja = await page.locator('#pausa').boundingBox();
+    expect(caja!.height).toBeGreaterThanOrEqual(24); // WCAG 2.5.8
+  }
+});
+
+test.describe('aviso de privacidad', () => {
+  test.use({ javaScriptEnabled: false });
+
+  test('es legible y se enlaza desde el pie y Contacto en cada idioma', async ({ page }) => {
+    for (const [i, { inicio, lang, contacto, aviso }] of rutas.entries()) {
+      await page.goto(inicio);
+      const selector = `a[href="${aviso}"]`;
+      await expect(page.locator(`${contacto} ${selector}`)).toBeVisible();
+      await page.locator(`.pie ${selector}`).click();
+      await expect(page).toHaveURL(aviso);
+      await expect(page.locator('html')).toHaveAttribute('lang', lang);
+      await expect(page.locator('h1')).toBeVisible();
+      await expect(page.locator('[data-pendiente="privacidad"]')).toHaveCount(negocio.avisoPrivacidad.confirmado ? 0 : 1);
+      await expect(page.locator(`article a[href="${rutas[i === 0 ? 1 : 0].aviso}"]`)).toBeVisible();
+      await expect(page.locator(`article a[href="${inicio}"]`)).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    }
+  });
 });
 
 test('la cabecera no tapa el destino de un ancla y no hay scroll horizontal', async ({ page }) => {

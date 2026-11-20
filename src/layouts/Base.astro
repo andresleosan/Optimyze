@@ -9,10 +9,11 @@ interface Props {
   idioma: Idioma;
   titulo: string;
   descripcion: string;
-  /** false en páginas sin equivalente por idioma (404): sin canonical ni hreflang. */
-  alternas?: boolean;
+  /** false en páginas sin equivalente por idioma (404). */
+  alternas?: Record<Idioma, string> | false;
 }
-const { idioma, titulo, descripcion, alternas = true } = Astro.props;
+const { idioma, titulo, descripcion, alternas = { en: idiomas.en.ruta, es: idiomas.es.ruta } } = Astro.props;
+const portada = alternas && alternas[idioma] === idiomas[idioma].ruta;
 const url = (ruta: string, sitio = Astro.site) => new URL(ruta, sitio).href;
 const sitioSocial = import.meta.env.PUBLIC_URL_VISTA_PREVIA
   || (Astro.site?.hostname === 'example.com' ? 'https://preview.optimyzejersey.pages.dev' : Astro.site);
@@ -32,10 +33,16 @@ const altImagenSocial = `${titulo}. ${contenidos[idioma].meta.imagenSocialAlt}`;
     {
       alternas && (
         <>
-          <link rel="canonical" href={url(idiomas[idioma].ruta)} />
-          <link rel="alternate" hreflang="en" href={url(idiomas.en.ruta)} />
-          <link rel="alternate" hreflang="es" href={url(idiomas.es.ruta)} />
-          <link rel="alternate" hreflang="x-default" href={url(idiomas.en.ruta)} />
+          <link rel="canonical" href={url(alternas[idioma])} />
+          <link rel="alternate" hreflang="en" href={url(alternas.en)} />
+          <link rel="alternate" hreflang="es" href={url(alternas.es)} />
+          <link rel="alternate" hreflang="x-default" href={url(alternas.en)} />
+        </>
+      )
+    }
+    {
+      portada && (
+        <>
           <meta property="og:type" content="website" />
           <meta property="og:title" content={titulo} />
           <meta property="og:description" content={descripcion} />
