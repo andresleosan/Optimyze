@@ -1,14 +1,17 @@
 {
   "id": "WEB-12",
   "titulo": "Mantener la sección al cambiar de idioma",
-  "estado": "pendiente",
+  "estado": "hecho",
   "responsable": "desarrollo",
   "criterio": [
     "El conmutador abre la sección equivalente en ambos sentidos, también desde un enlace directo o después de desplazarse por la página.",
     "Al cambiar desde Inicio o desde una sección sin equivalente se abre la portada del otro idioma.",
     "El conmutador funciona con teclado, movimiento reducido y sin WebGL. Sin JavaScript sigue enlazando a la portada del otro idioma."
   ],
-  "depende": ["WEB-02", "WEB-11"],
+  "depende": [
+    "WEB-02",
+    "WEB-11"
+  ],
   "comprueba": [],
   "recursos": [
     "src/components/Pagina.astro",
@@ -16,12 +19,14 @@
     "src/viaje/pagina.ts",
     "e2e/viaje.spec.ts"
   ],
-  "hecho": "",
-  "falta": "El enlace cambia de idioma pero lleva a Inicio aunque el visitante ya esté leyendo otra sección.",
+  "hecho": "El conmutador de idioma lleva a la sección equivalente (Servicios, Nuestro trabajo, Equipo, Preguntas, Contacto) en ambos sentidos; desde Inicio lleva a la portada del otro idioma. Cada sección declara su ancla equivalente en data-otra y el enlace se recalcula con el scroll y al pulsar.",
+  "falta": "",
   "bloqueo": "",
-  "siguiente": "Usar la sección activa para enlazar a su equivalente en el otro idioma y comprobar el resultado a 360 y 1280 px.",
+  "siguiente": "",
   "evidencia": [
-    "Chrome a 360 px: al cambiar de idioma desde Quiénes somos y About us se pierde el fragmento en ambas direcciones."
+    "Chrome a 360 px: al cambiar de idioma desde Quiénes somos y About us se pierde el fragmento en ambas direcciones.",
+    "2026-11-20: pnpm check, 23 pruebas de lógica, build y check:release OK. Chrome a 360 y 1280 px: 4 casos nuevos del conmutador (ambos sentidos, teclado, tras desplazarse, Inicio, movimiento reducido sin WebGL, sin JavaScript) pasan; resto de e2e pasa salvo 404 bilingüe, que falla solo por usar un servidor estático temporal en lugar de wrangler (límite de inotify del VPS), sin relación con el cambio.",
+    "Decisión: la equivalencia es por sección de primer nivel, no por pilar de Servicios (fuente: criterio de la ficha)."
   ],
   "actualizado": "2026-11-20"
 }

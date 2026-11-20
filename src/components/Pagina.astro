@@ -9,6 +9,11 @@ interface Props {
 const { idioma } = Astro.props;
 const c = contenidos[idioma];
 const otro = idiomas[idioma === 'en' ? 'es' : 'en'];
+const co = contenidos[idioma === 'en' ? 'es' : 'en'];
+const listaOtro = secciones(co);
+// Ancla de la misma sección en el otro idioma: el conmutador la usa para no perder el sitio.
+const otra = (clave: 'servicios' | 'trabajo' | 'equipo' | 'preguntas' | 'contacto') =>
+  listaOtro.includes(co[clave]) ? co[clave].ancla : undefined;
 const lista = secciones(c);
 const hayTrabajo = lista.includes(c.trabajo);
 const correo = correoPublico;
@@ -45,7 +50,7 @@ const organizacion = JSON.stringify({
       <a class="nav-contacto" href={`#${c.contacto.ancla}`}>{c.contacto.menu}</a>
     </nav>
     <div class="controles">
-      <a class="control" href={otro.ruta} lang={otro.html} hreflang={otro.hreflang}>{c.ui.otroIdioma}</a>
+      <a class="control" id="idioma" href={otro.ruta} lang={otro.html} hreflang={otro.hreflang}>{c.ui.otroIdioma}</a>
       <button class="control" id="pausa" type="button" aria-pressed="false" hidden>{c.ui.pausar}</button>
     </div>
   </header>
@@ -62,7 +67,7 @@ const organizacion = JSON.stringify({
       </div>
     </section>
 
-    <section id={c.servicios.ancla} data-nombre={c.servicios.menu}>
+    <section id={c.servicios.ancla} data-otra={otra('servicios')} data-nombre={c.servicios.menu}>
       <div class="parada" data-parada>
         <div class="bloque">
           <h2>{c.servicios.titulo}</h2>
@@ -109,7 +114,7 @@ const organizacion = JSON.stringify({
 
     {
       hayTrabajo && (
-        <section id={c.trabajo.ancla} data-nombre={c.trabajo.menu} class="parada" data-parada>
+        <section id={c.trabajo.ancla} data-otra={otra('trabajo')} data-nombre={c.trabajo.menu} class="parada" data-parada>
           <div class="bloque ancho">
             <h2>{c.trabajo.titulo}</h2>
             <div class="muestras">
@@ -132,14 +137,14 @@ const organizacion = JSON.stringify({
       )
     }
 
-    <section id={c.equipo.ancla} data-nombre={c.equipo.menu} class="parada" data-parada>
+    <section id={c.equipo.ancla} data-otra={otra('equipo')} data-nombre={c.equipo.menu} class="parada" data-parada>
       <div class="bloque">
         <h2>{c.equipo.titulo}</h2>
         <p>{c.equipo.texto}</p>
       </div>
     </section>
 
-    <section id={c.preguntas.ancla} data-nombre={c.preguntas.menu} class="parada preguntas" data-parada>
+    <section id={c.preguntas.ancla} data-otra={otra('preguntas')} data-nombre={c.preguntas.menu} class="parada preguntas" data-parada>
       <div class="bloque">
         <h2>{c.preguntas.titulo}</h2>
         <dl>
@@ -155,7 +160,7 @@ const organizacion = JSON.stringify({
       </div>
     </section>
 
-    <section id={c.contacto.ancla} data-nombre={c.contacto.menu} class="parada contacto" data-parada>
+    <section id={c.contacto.ancla} data-otra={otra('contacto')} data-nombre={c.contacto.menu} class="parada contacto" data-parada>
       <div class="bloque">
         <h2>{c.contacto.titulo}</h2>
         <p>{c.contacto.texto}</p>

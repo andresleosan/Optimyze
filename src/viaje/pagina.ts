@@ -8,8 +8,10 @@ export function seguirSecciones(): void {
   let actual = -1;
   let pendiente = false;
 
-  function actualizar() {
-    pendiente = false;
+  const idioma = document.querySelector<HTMLAnchorElement>('#idioma');
+  const portada = idioma?.getAttribute('href') ?? '';
+
+  function indice() {
     const raiz = document.documentElement;
     const linea = scrollY + innerHeight * 0.4;
     let i = 0;
@@ -17,6 +19,21 @@ export function seguirSecciones(): void {
       if (s.getBoundingClientRect().top + scrollY <= linea) i = k;
     });
     if (scrollY + innerHeight >= raiz.scrollHeight - 2) i = secciones.length - 1; // fin de página = última sección
+    return i;
+  }
+
+  // El conmutador lleva a la sección equivalente; sin ella (Inicio) o sin JavaScript, a la portada.
+  function enlazarIdioma(i: number) {
+    const otra = secciones[i]!.dataset.otra;
+    idioma?.setAttribute('href', otra ? `${portada}#${otra}` : portada);
+  }
+  // Se recalcula al pulsar: el scroll de un enlace directo puede llegar después del último avance.
+  idioma?.addEventListener('click', () => enlazarIdioma(indice()));
+
+  function actualizar() {
+    pendiente = false;
+    const i = indice();
+    enlazarIdioma(i);
     if (i === actual) return;
     actual = i;
     const s = secciones[i]!;

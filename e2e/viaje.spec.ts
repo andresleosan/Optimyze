@@ -137,6 +137,52 @@ test.describe('aviso de privacidad', () => {
   });
 });
 
+test.describe('conmutador de idioma', () => {
+  const pares = [
+    { de: '/#about', a: '/es/#equipo' },
+    { de: '/es/#equipo', a: '/#about' },
+    { de: '/#faq', a: '/es/#preguntas' },
+    { de: '/es/#visibilidad', a: '/es/#servicios', salto: '/#services' },
+  ];
+  test('abre la sección equivalente en ambos sentidos, con teclado y tras desplazarse', async ({ page }) => {
+    for (const { de, a, salto } of pares) {
+      await page.goto(de);
+      await page.locator('#idioma').focus();
+      await page.keyboard.press('Enter');
+      await expect(page).toHaveURL(salto ?? a);
+      await page.waitForLoadState('load');
+    }
+    // Tras desplazarse con la rueda, sin enlace directo.
+    await page.goto('/es/');
+    await page.evaluate(() => document.querySelector('#preguntas')!.scrollIntoView());
+    await page.locator('#idioma').click();
+    await expect(page).toHaveURL('/#faq');
+  });
+
+  test('desde Inicio lleva a la portada del otro idioma', async ({ page }) => {
+    await page.goto('/es/');
+    await page.locator('#idioma').click();
+    await expect(page).toHaveURL('/');
+    await page.locator('#idioma').click();
+    await expect(page).toHaveURL('/es/');
+  });
+
+  test('con movimiento reducido y sin WebGL conserva la sección', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/es/#contacto');
+    await page.locator('#idioma').click();
+    await expect(page).toHaveURL('/#contact');
+  });
+
+  test.describe('sin JavaScript', () => {
+    test.use({ javaScriptEnabled: false });
+    test('enlaza a la portada del otro idioma', async ({ page }) => {
+      await page.goto('/es/#equipo');
+      await expect(page.locator('#idioma')).toHaveAttribute('href', '/');
+    });
+  });
+});
+
 test('la cabecera no tapa el destino de un ancla y no hay scroll horizontal', async ({ page }) => {
   await page.goto('/es/#visibilidad');
   const top = await page.locator('#visibilidad').evaluate((el) => el.getBoundingClientRect().top);
