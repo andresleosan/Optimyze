@@ -2,7 +2,7 @@
 import '@fontsource-variable/archivo';
 import '@fontsource-variable/atkinson-hyperlegible-next';
 import '../styles/global.css';
-import { contenidos, correoPublico, identidadPublica, negocio } from '../contenido';
+import { requisitosDeLanzamiento } from '../contenido/seguimiento';
 
 interface Ficha {
   id: string;
@@ -10,6 +10,12 @@ interface Ficha {
   estado: string;
   actualizado?: string;
   aplazada?: boolean;
+  hecho?: string;
+  falta?: string;
+  siguiente?: string;
+  depende?: string[];
+  criterio?: string[];
+  evidencia?: string[];
 }
 
 const fichas = Object.values(import.meta.glob<Ficha>('../../docs/roadmap/tasks/WEB-*.json', {
@@ -21,21 +27,9 @@ const estados: Record<string, string> = {
 };
 const tareas = fichas
   .filter((ficha) => !ficha.aplazada && ficha.estado !== 'descartado')
-  .map(({ id, titulo, estado, actualizado }) => ({ id, titulo, estado, actualizado, hecha: estado === 'hecho' }))
+  .map((ficha) => ({ ...ficha, hecha: ficha.estado === 'hecho' }))
   .sort((a, b) => Number(a.hecha) - Number(b.hecha) || b.id.localeCompare(a.id, 'es', { numeric: true }));
-const lenguas = Object.values(contenidos);
-const muestras = lenguas.flatMap((contenido) => contenido.trabajo.muestras);
-const requisitos = [
-  { id: 'correo', titulo: 'Confirmar el correo de contacto', hecha: Boolean(correoPublico) },
-  { id: 'identidad', titulo: 'Confirmar la identidad legal', hecha: Boolean(identidadPublica) },
-  { id: 'registro', titulo: 'Confirmar el registro de protección de datos', hecha: negocio.registroPrivacidad.confirmado && Boolean(negocio.registroPrivacidad.numero.trim()) },
-  { id: 'privacidad', titulo: 'Aprobar el aviso de privacidad en los dos idiomas', hecha: negocio.avisoPrivacidad.confirmado },
-  { id: 'perfiles', titulo: 'Confirmar los perfiles profesionales que se enlazan', hecha: negocio.perfiles.confirmado },
-  { id: 'permiso', titulo: 'Confirmar los permisos de las muestras o retirarlas', hecha: muestras.every((muestra) => muestra.aprobada) },
-  { id: 'imagen', titulo: 'Incorporar imágenes autorizadas a las muestras que se mantengan', hecha: muestras.every((muestra) => Boolean(muestra.imagen)) },
-  { id: 'texto', titulo: 'Aprobar los textos de los dos idiomas', hecha: lenguas.every((contenido) => contenido.meta.revisado) },
-  { id: 'dominio', titulo: 'Definir el dominio de producción', hecha: Boolean(Astro.site && Astro.site.hostname !== 'example.com') },
-].sort((a, b) => Number(a.hecha) - Number(b.hecha));
+const requisitos = requisitosDeLanzamiento(Boolean(Astro.site && Astro.site.hostname !== 'example.com'));
 
 const entregadas = tareas.filter((tarea) => tarea.hecha).length;
 const requisitosListos = requisitos.filter((requisito) => requisito.hecha).length;
@@ -81,7 +75,7 @@ const fecha = new Intl.DateTimeFormat('es', { dateStyle: 'medium', timeZone: 'UT
 
       <div class="herramientas">
         <div class="filtros" hidden>
-          <label>Buscar <input id="buscar" type="search" placeholder="Título o código" /></label>
+          <label>Buscar <input id="buscar" type="search" placeholder="Tarea o código" /></label>
           <label>Estado
             <select id="estado">
               <option value="todas">Todos</option>
@@ -100,12 +94,32 @@ const fecha = new Intl.DateTimeFormat('es', { dateStyle: 'medium', timeZone: 'UT
           <h2 id="publicacion">Antes de publicar</h2>
           <span>{requisitos.length - requisitosListos} por resolver</span>
         </div>
+        <p class="instrucciones">Abre una tarea para ver qué debes aportar. Usa el comando de la ficha en Codex y comparte tu respuesta en el chat.</p>
         <ul class="checklist" role="list">
           {requisitos.map((tarea) => (
-            <li data-tarea data-requisito-pendiente={tarea.hecha ? undefined : tarea.id} data-hecha={String(tarea.hecha)}>
-              <span class="casilla" aria-hidden="true"></span>
-              <span class="descripcion">{tarea.titulo}</span>
-              <span class="estado">{tarea.hecha ? 'Listo' : 'Pendiente'}</span>
+            <li data-tarea data-codigos={tarea.tareas.join(' ')} data-requisito-pendiente={tarea.hecha ? undefined : tarea.id} data-hecha={String(tarea.hecha)}>
+              <details>
+                <summary>
+                  <span class="casilla" aria-hidden="true"></span>
+                  <span>{tarea.titulo}<span class="codigo">{tarea.tareas.join(' · ')}</span></span>
+                  <span class="estado">{tarea.hecha ? 'Listo' : 'Pendiente'}</span>
+                </summary>
+                <div class="detalle">
+                  {tarea.antes && <p><strong>Antes de empezar</strong> {tarea.antes}</p>}
+                  <h3>Qué debes hacer</h3>
+                  <ol>{tarea.pasos.map((paso) => <li>{paso}</li>)}</ol>
+                  {tarea.enlaces && (
+                    <ul class="referencias" role="list">
+                      {tarea.enlaces.map(({ texto, url }) => <li><a href={url}>{texto}</a></li>)}
+                    </ul>
+                  )}
+                  <h3>Cómo se comprueba</h3>
+                  <p>{tarea.comprobacion}</p>
+                  <div class="comandos" aria-label="Comandos para retomar en Codex" role="group">
+                    {tarea.tareas.map((id) => <code>$avanzar {id}</code>)}
+                  </div>
+                </div>
+              </details>
             </li>
           ))}
         </ul>
@@ -120,10 +134,23 @@ const fecha = new Intl.DateTimeFormat('es', { dateStyle: 'medium', timeZone: 'UT
         </div>
         <ul class="checklist" role="list">
           {tareas.map((tarea) => (
-            <li data-tarea data-hecha={String(tarea.hecha)}>
-              <span class="casilla" aria-hidden="true"></span>
-              <span class="descripcion"><span class="codigo">{tarea.id}</span> {tarea.titulo}</span>
-              <span class="estado">{estados[tarea.estado] ?? tarea.estado}</span>
+            <li data-tarea data-codigos={tarea.id} data-hecha={String(tarea.hecha)}>
+              <details>
+                <summary>
+                  <span class="casilla" aria-hidden="true"></span>
+                  <span>{tarea.titulo}<span class="codigo">{tarea.id}</span></span>
+                  <span class="estado">{estados[tarea.estado] ?? tarea.estado}</span>
+                </summary>
+                <div class="detalle">
+                  {tarea.siguiente && <><h3>Siguiente paso</h3><p>{tarea.siguiente}</p></>}
+                  {tarea.falta && <><h3>Qué falta</h3><p>{tarea.falta}</p></>}
+                  {tarea.hecho && <><h3>Resultado</h3><p>{tarea.hecho}</p></>}
+                  {tarea.depende?.length ? <p><strong>Depende de</strong> {tarea.depende.join(' · ')}</p> : null}
+                  {tarea.criterio?.length ? <><h3>Criterios de cierre</h3><ul>{tarea.criterio.map((criterio) => <li>{criterio}</li>)}</ul></> : null}
+                  {tarea.evidencia?.length ? <><h3>Comprobaciones</h3><ul>{tarea.evidencia.map((prueba) => <li>{prueba}</li>)}</ul></> : null}
+                  <div class="comandos"><code>$avanzar {tarea.id}</code></div>
+                </div>
+              </details>
             </li>
           ))}
         </ul>
@@ -146,11 +173,15 @@ const fecha = new Intl.DateTimeFormat('es', { dateStyle: 'medium', timeZone: 'UT
 
   function filtrar() {
     const texto = normalizar(buscar.value.trim());
+    const codigo = /^(?:[$/]avanzar\s+)?([a-z]+-\d+)$/u.exec(texto)?.[1];
     let visibles = 0;
     for (const { grupo, tareas } of grupos) {
       for (const tarea of tareas) {
         const coincideEstado = estado.value === 'todas' || (estado.value === 'hechas') === (tarea.dataset.hecha === 'true');
-        tarea.hidden = !coincideEstado || !normalizar(tarea.textContent ?? '').includes(texto);
+        const coincideTexto = codigo
+          ? tarea.dataset.codigos?.toLowerCase().split(' ').includes(codigo)
+          : normalizar(tarea.textContent ?? '').includes(texto);
+        tarea.hidden = !coincideEstado || !coincideTexto;
         if (!tarea.hidden) visibles++;
       }
       grupo.hidden = tareas.every((tarea) => tarea.hidden);
@@ -227,18 +258,34 @@ const fecha = new Intl.DateTimeFormat('es', { dateStyle: 'medium', timeZone: 'UT
   .titulo-lista h2 { font-size: clamp(1.25rem, 3vw, 1.6rem); margin: 0; }
   .titulo-lista span { color: var(--texto-suave); font-size: 0.875rem; }
   .checklist { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--linea); }
-  .checklist li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: first baseline; gap: 0.65rem; min-height: 3rem; padding-block: 0.7rem; border-bottom: 1px solid var(--linea); font-size: 1rem; }
+  .instrucciones { color: var(--texto-suave); font-size: 1rem; margin-bottom: 1rem; }
+  .checklist > li { border-bottom: 1px solid var(--linea); font-size: 1rem; }
+  .checklist summary { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: start; gap: 0.65rem; min-height: 3rem; padding-block: 0.7rem; cursor: pointer; }
+  .checklist summary::-webkit-details-marker { display: none; }
+  .checklist summary:hover { color: var(--ambar); }
+  .checklist summary::after { content: ''; width: 0.45rem; height: 0.45rem; margin: 0.42rem 0.18rem 0 0.1rem; border: solid var(--texto-suave); border-width: 0 1px 1px 0; transform: rotate(45deg); }
+  .checklist details[open] summary::after { transform: rotate(225deg); margin-top: 0.56rem; }
   .casilla { position: relative; top: 0.08em; width: 1rem; height: 1rem; border: 1px solid var(--borde); border-radius: 0.14rem; }
   [data-hecha='true'] .casilla { background: var(--ambar); border-color: var(--ambar); color: var(--sobre-ambar); }
   [data-hecha='true'] .casilla::after { content: ''; position: absolute; width: 0.34rem; height: 0.57rem; top: 0.11rem; left: 0.29rem; border: solid currentColor; border-width: 0 2px 2px 0; transform: rotate(45deg); }
   .estado { font-size: 0.875rem; color: var(--texto-suave); }
   [data-hecha='true'] .estado { color: var(--ambar); }
-  .codigo { font-size: 0.875rem; margin-right: 0.35rem; color: var(--texto-suave); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .codigo { display: block; font-size: 0.875rem; color: var(--texto-suave); font-variant-numeric: tabular-nums; }
+  .detalle { margin-left: 1.65rem; padding: 0.25rem 0 1.25rem; max-width: 44rem; }
+  .detalle h3 { font-size: 1rem; margin: 0 0 0.35rem; }
+  .detalle p, .detalle :is(ul, ol) { color: var(--texto-suave); margin: 0 0 1rem; overflow-wrap: anywhere; }
+  .detalle :is(ul, ol) { padding-inline-start: 1.25rem; }
+  .detalle li + li { margin-top: 0.3rem; }
+  .detalle .referencias { display: flex; gap: 0.25rem 1rem; flex-wrap: wrap; padding: 0; list-style: none; }
+  .referencias li + li { margin-top: 0; }
+  .referencias a { color: var(--ambar); text-underline-offset: 0.2em; display: inline-flex; min-height: 2.75rem; align-items: center; }
+  .comandos { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .comandos code { padding: 0.15rem 0.5rem; border: 1px solid var(--linea); border-radius: 0.25rem; color: var(--ambar); font-size: 0.875rem; }
 
   @media (max-width: 34rem) {
     .herramientas { gap: 0.4rem; }
     .filtros { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; }
-    .checklist li { gap: 0.5rem; }
-    .codigo { display: block; }
+    .checklist summary { gap: 0.45rem; }
+    .detalle { margin-left: 1.45rem; }
   }
 </style>

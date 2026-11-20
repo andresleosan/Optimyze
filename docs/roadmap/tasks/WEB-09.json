@@ -6,22 +6,25 @@
   "criterio": [
     "La vista previa ofrece un checklist legible también en móvil y sin JavaScript, con búsqueda y filtro por estado cuando hay JavaScript.",
     "Los estados se actualizan en cada despliegue desde las fichas WEB vigentes y los requisitos de publicación. Las fichas privadas quedan fuera del artefacto.",
-    "El checklist queda fuera del sitemap y de la compilación de producción."
+    "El checklist queda fuera del sitemap y de la compilación de producción.",
+    "Cada requisito de lanzamiento detalla los pasos, la comprobación y los comandos para retomar sus tareas. Las fichas WEB ofrecen sus criterios, resultados y evidencias al abrirlas."
   ],
   "depende": ["WEB-03", "WEB-04"],
   "comprueba": [],
   "recursos": [
     "astro.config.mjs",
     "src/components/Seguimiento.astro",
+    "src/contenido/seguimiento.ts",
     "scripts/check-release.mjs"
   ],
-  "hecho": "Checklist en /es/seguimiento/ con estados de las fichas WEB y de los requisitos de publicación, regenerado al desplegar la vista previa.",
+  "hecho": "Checklist en /es/seguimiento/ con fichas desplegables por requisito de publicación y por tarea WEB. Sus estados se regeneran al desplegar la vista previa.",
   "falta": "",
   "bloqueo": "",
   "siguiente": "",
   "evidencia": [
     "Chrome a 360 y 1280 px: recuentos, búsqueda sin tildes, filtro por estado, actualización, ancho de página y lista completa sin JavaScript.",
-    "El sitemap y la compilación de producción excluyen la ruta. check:release contrasta los estados con los requisitos del artefacto de vista previa."
+    "El sitemap y la compilación de producción excluyen la ruta. check:release contrasta los estados con los requisitos del artefacto de vista previa.",
+    "Las nueve guías y sus referencias de tarea se comprobaron a 360 y 1280 px. Los detalles se abren con teclado y sin JavaScript. La búsqueda acepta códigos y comandos completos."
   ],
   "actualizado": "2026-11-20"
 }
