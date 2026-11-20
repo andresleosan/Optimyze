@@ -1,7 +1,7 @@
 {
   "id": "WEB-08",
   "titulo": "Ajustes visuales tras la prueba en dispositivos reales",
-  "estado": "pendiente",
+  "estado": "hecho",
   "responsable": "dueño",
   "criterio": [
     "El dueño ha probado la vista previa en móvil y ordenador.",
@@ -13,10 +13,12 @@
     "src/styles/**",
     "src/viaje/**"
   ],
-  "hecho": "",
+  "hecho": "El dueño dio el visto bueno a la vista previa y autorizó cerrar la tarea. La versión publicada queda aprobada sin ajustes visuales.",
   "falta": "",
-  "bloqueo": "Abre la vista previa en tu móvil y en tu ordenador y di qué cambiarías.",
+  "bloqueo": "",
   "siguiente": "",
-  "evidencia": [],
-  "actualizado": "2026-11-19"
+  "evidencia": [
+    "Visto bueno del dueño en la conversación del 20-nov-2026 sobre la vista previa del commit b23c6ce."
+  ],
+  "actualizado": "2026-11-20"
 }
