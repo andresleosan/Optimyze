@@ -1,0 +1,27 @@
+{
+  "id": "WEB-13",
+  "titulo": "Actualizar las acciones del despliegue a versiones con Node 24",
+  "estado": "parcial",
+  "responsable": "desarrollo",
+  "criterio": [
+    "El flujo de despliegue usa actions/checkout, pnpm/action-setup y actions/setup-node en versiones que corren en Node 24.",
+    "La ejecución en GitHub Actions termina bien y ya no muestra el aviso de Node 20 obsoleto.",
+    "La vista previa sigue publicándose con noindex."
+  ],
+  "depende": [
+    "WEB-04"
+  ],
+  "comprueba": [],
+  "recursos": [
+    ".github/workflows/desplegar.yml"
+  ],
+  "hecho": "",
+  "falta": "Comprobar la ejecución en GitHub Actions tras el push.",
+  "bloqueo": "",
+  "siguiente": "Push y revisar la ejecución y sus avisos.",
+  "evidencia": [
+    "Antes: la ejecución 44832642591 avisa «Node.js 20 is deprecated» para checkout@v4, setup-node@v4 y pnpm/action-setup@v4.",
+    "Versiones elegidas según sus notas de publicación: checkout v7, setup-node v7 (la caché con cache: pnpm se mantiene explícita) y pnpm/action-setup v6 (soporte de pnpm 11)."
+  ],
+  "actualizado": "2026-11-21"
+}
